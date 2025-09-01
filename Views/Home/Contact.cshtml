@@ -1,19 +1,21 @@
 ﻿@{
-    ViewBag.Title = "Contact";
+    ViewBag.Title = "Contact ChhayaNirh";
 }
-<main aria-labelledby="title">
-    <h2 id="title">@ViewBag.Title.</h2>
-    <h3>@ViewBag.Message</h3>
 
-    <address>
-        One Microsoft Way<br />
-        Redmond, WA 98052-6399<br />
-        <abbr title="Phone">P:</abbr>
-        425.555.0100
+<main class="container my-5">
+    <h2 style="color:#000000;">Contact Us</h2>
+    <p style="color:#000000;" class="lead">
+        Have questions or need assistance with posting, searching, or making payments?
+        Our support team is here to help you.
+    </p>
+
+    <address style="color:#000000;">
+        <strong>Email Support:</strong> <a href="mailto:support@chhayanirh.com" style="color:#007BFF;">support@chhayanirh.com</a><br />
+        <strong>Phone:</strong> +880 1234 567890<br />
+        <strong>Office:</strong> Dhaka, Bangladesh
     </address>
 
-    <address>
-        <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
-        <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-    </address>
+    <p style="color:#000000;">
+        You can also reach out to us via the <a href="@Url.Action("Chat", "Home")" style="color:#007BFF;">Chat</a> feature on the website.
+    </p>
 </main>

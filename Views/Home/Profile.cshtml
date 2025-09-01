@@ -1,0 +1,37 @@
+﻿@model ChhayaNirh.Models.User
+@{
+    ViewBag.Title = "Profile";
+}
+
+<main class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-4" style="background-color:#f0f0f0;">
+
+                <!-- Profile Picture + Heading -->
+                <div class="d-flex flex-column align-items-center mb-4">
+                    <img src="@(string.IsNullOrEmpty(Model.ProfilePicturePath) ? Url.Content("~/Content/images/default-profile.png") : Url.Content(Model.ProfilePicturePath))"
+                         class="rounded-circle mb-3"
+                         alt="Profile Picture"
+                         width="70" height="70" />
+                    <h2 class="mb-0 text-center" style="color:#000000;">Your Profile</h2>
+                </div>
+
+                <!-- Profile Info -->
+                <p><strong>Full Name:</strong> @Model.FullName</p>
+                <p><strong>Email:</strong> @Model.Email</p>
+                <p><strong>Phone:</strong> @Model.Phone</p>
+                <p><strong>User Type:</strong> @Model.UserType</p>
+
+                <p><strong>NID Scan:</strong> <a href="@Url.Content(Model.NIDScanPath)" target="_blank">View File</a></p>
+                <p><strong>Electricity Bill:</strong> <a href="@Url.Content(Model.ElectricityBillPath)" target="_blank">View File</a></p>
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-center mt-4 gap-5">
+                    <a href="@Url.Action("EditProfile", "Home")" class="btn btn-primary">Edit Profile</a>
+                    <a href="@Url.Action("Logout", "Home")" class="btn btn-danger">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

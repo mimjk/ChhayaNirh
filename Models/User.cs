@@ -1,22 +1,22 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace ChhayaNirh.Models
 {
     public class User
     {
-        [Key] // Primary key
         public int Id { get; set; }
 
-        [Required]
-        [StringLength(100)]
-        public string Name { get; set; }
+        [Required] public string FullName { get; set; }
+        [Required] public string Email { get; set; }
+        [Required] public string Phone { get; set; }
+        [Required] public string Password { get; set; }
+        [Required] public string UserType { get; set; } // Homeowner / Renter
 
-        [Required]
-        [StringLength(100)]
-        public string Email { get; set; }
+        public string NIDScanPath { get; set; }
+        public string ElectricityBillPath { get; set; }
+        public string ProfilePicturePath { get; set; } // Stores the uploaded picture path
+        public DateTime CreatedAt { get; set; }
 
-        // Optional: you can add more fields
-        // public string Phone { get; set; }
-        // public DateTime CreatedAt { get; set; }
     }
 }
