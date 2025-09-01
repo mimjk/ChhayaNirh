@@ -1,0 +1,57 @@
+﻿@model ChhayaNirh.Models.User
+@{
+    ViewBag.Title = "Edit Profile";
+}
+
+<main class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-4" style="background-color:#f0f0f0;">
+
+                <h2 class="text-center mb-4" style="color:#000000;">Edit Profile</h2>
+
+                @using (Html.BeginForm("EditProfile", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <!-- Profile Picture Preview + Upload -->
+                    <div class="text-center mb-3">
+                        <img id="profilePreview"
+                             src="@(string.IsNullOrEmpty(Model.ProfilePicturePath) ? Url.Content("~/Content/images/default-profile.png") : Url.Content(Model.ProfilePicturePath))"
+                             class="rounded-circle mb-2"
+                             width="100" height="100" />
+                        <input type="file" class="form-control mb-2" name="ProfilePicture" accept=".jpg,.png,.jpeg" onchange="previewImage(event)" />
+
+                        <!-- Remove profile picture button -->
+                        @if (!string.IsNullOrEmpty(Model.ProfilePicturePath))
+                        {
+                            <button type="submit" name="RemoveProfilePicture" value="true" class="btn btn-warning btn-sm mt-1">Remove Profile Picture</button>
+                        }
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="Email" value="@Model.Email" required />
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                        <a href="@Url.Action("Profile", "Home")" class="btn btn-secondary">Cancel</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    function previewImage(event) {
+        var reader = new FileReader();
+        reader.onload = function () {
+            var output = document.getElementById('profilePreview');
+            output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>

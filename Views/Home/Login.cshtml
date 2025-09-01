@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "Login";
+}
+
+<main class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-sm p-4" style="background-color:#f0f0f0;">
+                <h2 class="text-center mb-4" style="color:#000000;">Login to ChhayaNirh</h2>
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger">@ViewBag.Error</div>
+                }
+
+                @using (Html.BeginForm("Login", "Home", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken() <!-- 🔹 Add this line -->
+
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="text" class="form-control" id="phone" name="Phone" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="Password" required />
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-dark">Login</button>
+                    </div>
+                }
+
+                <p class="text-center mt-3" style="color:#000000;">
+                    Don't have an account? <a href="@Url.Action("Signup", "Home")" style="color:#007BFF;">Signup here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</main>
