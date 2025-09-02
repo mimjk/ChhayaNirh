@@ -8,7 +8,7 @@
             <div class="card shadow-sm p-4" style="background-color:#f0f0f0;">
                 <h2 class="text-center mb-4" style="color:#000000;">Create Your Account</h2>
 
-                @using (Html.BeginForm("Signup", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                @using (Html.BeginForm("Signup", "Signup", FormMethod.Post, new { enctype = "multipart/form-data" }))
                 {
                     @Html.AntiForgeryToken() <!-- 🔹 Add this line -->
 
@@ -60,7 +60,7 @@
                 }
 
                 <p class="text-center mt-3" style="color:#000000;">
-                    Already have an account? <a href="@Url.Action("Login", "Home")" style="color:#007BFF;">Login here</a>
+                    Already have an account? <a href="@Url.Action("Login", "Login")" style="color:#007BFF;">Login here</a>
                 </p>
             </div>
         </div>

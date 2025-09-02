@@ -28,22 +28,23 @@
                     @if (Session["UserId"] != null)
                     {
                         <li class="nav-item">
-                            @Html.ActionLink("Chat", "Chat", "Home", null, new { @class = "nav-link" })
+                            @Html.ActionLink("Chat", "Chat", "Chat", null, new { @class = "nav-link" })
                         </li>
                         <li class="nav-item">
-                            @Html.ActionLink("Post", "Post", "Home", null, new { @class = "nav-link" })
+                            @Html.ActionLink("Post", "Post", "Post", null, new { @class = "nav-link" })
                         </li>
                         <li class="nav-item">
-                            @Html.ActionLink("Profile", "Profile", "Home", null, new { @class = "nav-link" })
-                        </li> 
+                            @Html.ActionLink("Profile", "Profile", "Profile", null, new { @class = "nav-link" })
+                        </li>
+
                     }
                     else
                     {
                         <li class="nav-item">
-                            @Html.ActionLink("Login", "Login", "Home", null, new { @class = "nav-link" })
+                            @Html.ActionLink("Login", "Login", "Login", null, new { @class = "nav-link" })
                         </li>
                         <li class="nav-item">
-                            @Html.ActionLink("Signup", "Signup", "Home", null, new { @class = "nav-link" })
+                            @Html.ActionLink("Signup", "Signup", "Signup", null, new { @class = "nav-link" })
                         </li>
                     }
                 </ul>
