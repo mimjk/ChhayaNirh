@@ -13,7 +13,7 @@
                     <div class="alert alert-danger">@ViewBag.Error</div>
                 }
 
-                @using (Html.BeginForm("Login", "Home", FormMethod.Post))
+                @using (Html.BeginForm("Login", "Login", FormMethod.Post))
                 {
                     @Html.AntiForgeryToken() <!-- 🔹 Add this line -->
 
@@ -33,7 +33,7 @@
                 }
 
                 <p class="text-center mt-3" style="color:#000000;">
-                    Don't have an account? <a href="@Url.Action("Signup", "Home")" style="color:#007BFF;">Signup here</a>
+                    Don't have an account? <a href="@Url.Action("Signup", "Signup")" style="color:#007BFF;">Signup here</a>
                 </p>
             </div>
         </div>

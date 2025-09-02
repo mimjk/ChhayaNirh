@@ -10,7 +10,7 @@
 
                 <h2 class="text-center mb-4" style="color:#000000;">Edit Profile</h2>
 
-                @using (Html.BeginForm("EditProfile", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                @using (Html.BeginForm("EditProfile", "Profile", FormMethod.Post, new { enctype = "multipart/form-data" }))
                 {
                     @Html.AntiForgeryToken()
 
@@ -37,7 +37,7 @@
 
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary">Update Profile</button>
-                        <a href="@Url.Action("Profile", "Home")" class="btn btn-secondary">Cancel</a>
+                        <a href="@Url.Action("Profile", "Profile")" class="btn btn-secondary">Cancel</a>
                     </div>
                 }
             </div>
