@@ -7,13 +7,13 @@ namespace ChhayaNirh.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.5.1")]
-    public sealed partial class AddProfilePictureToUser : IMigrationMetadata
+    public sealed partial class AddProfilePicturePath : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AddProfilePictureToUser));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(AddProfilePicturePath));
         
         string IMigrationMetadata.Id
         {
-            get { return "202509012204390_AddProfilePictureToUser"; }
+            get { return "202509021455362_AddProfilePicturePath"; }
         }
         
         string IMigrationMetadata.Source
