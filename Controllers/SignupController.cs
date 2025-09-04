@@ -1,68 +1,117 @@
 ﻿using System;
-using System.IO;
-using System.Web;
+using System.Linq;
 using System.Web.Mvc;
 using ChhayaNirh.Models;
+using ChhayaNirh.Helpers;
+using System.Text.RegularExpressions;
 
 namespace ChhayaNirh.Controllers
 {
     public class SignupController : Controller
     {
-        // GET: Signup
         public ActionResult Signup()
         {
             return View();
         }
 
-        // POST: Signup
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Signup(HttpPostedFileBase NIDScan, HttpPostedFileBase ElectricityBill, FormCollection form)
+        public ActionResult Signup(FormCollection form)
         {
             try
             {
-                string fullName = form["FullName"];
-                string email = form["Email"];
-                string phone = form["Phone"];
+                string fullName = form["FullName"]?.Trim();
+                string email = form["Email"]?.Trim();
+                string phone = form["Phone"]?.Trim();
                 string password = form["Password"];
                 string confirmPassword = form["ConfirmPassword"];
+                string nidNumber = form["NIDNumber"]?.Trim();
+                string dateOfBirthString = form["DateOfBirth"];
 
-                if (password != confirmPassword)
+                // Basic validation
+                if (string.IsNullOrEmpty(fullName) || string.IsNullOrEmpty(email) ||
+                    string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(password) ||
+                    string.IsNullOrEmpty(nidNumber) || string.IsNullOrEmpty(dateOfBirthString))
                 {
-                    ViewBag.Error = "Passwords do not match.";
+                    TempData["Error"] = "All fields are required.";
                     return View();
                 }
 
-                string nidFileName = null;
-                string billFileName = null;
-
-                if (NIDScan != null && NIDScan.ContentLength > 0)
+                // Date of Birth validation
+                if (!DateTime.TryParse(dateOfBirthString, out DateTime dateOfBirth))
                 {
-                    nidFileName = Path.GetFileName(NIDScan.FileName);
-                    string nidPath = Path.Combine(Server.MapPath("~/Uploads/NID"), nidFileName);
-                    Directory.CreateDirectory(Path.GetDirectoryName(nidPath));
-                    NIDScan.SaveAs(nidPath);
+                    TempData["Error"] = "Please enter a valid date of birth.";
+                    return View();
                 }
 
-                if (ElectricityBill != null && ElectricityBill.ContentLength > 0)
+                // 18+ age validation
+                var today = DateTime.Today;
+                var age = today.Year - dateOfBirth.Year;
+                if (dateOfBirth.Date > today.AddYears(-age)) age--;
+
+                if (age < 18)
                 {
-                    billFileName = Path.GetFileName(ElectricityBill.FileName);
-                    string billPath = Path.Combine(Server.MapPath("~/Uploads/Bills"), billFileName);
-                    Directory.CreateDirectory(Path.GetDirectoryName(billPath));
-                    ElectricityBill.SaveAs(billPath);
+                    TempData["Error"] = "You must be at least 18 years old to register.";
+                    return View();
+                }
+
+                // Phone validation
+                if (!Regex.IsMatch(phone, @"^01[0-9]{9}$"))
+                {
+                    TempData["Error"] = "Phone number must be 11 digits and start with 01.";
+                    return View();
+                }
+
+                // NID validation
+                if (!Regex.IsMatch(nidNumber, @"^[0-9]{17}$"))
+                {
+                    TempData["Error"] = "NID must be exactly 17 digits and contain only numbers.";
+                    return View();
+                }
+
+                // Password validation
+                if (password != confirmPassword)
+                {
+                    TempData["Error"] = "Passwords do not match.";
+                    return View();
+                }
+
+                if (password.Length < 6)
+                {
+                    TempData["Error"] = "Password must be at least 6 characters long.";
+                    return View();
                 }
 
                 using (var db = new ApplicationDbContext())
                 {
+                    // Check if user already exists
+                    if (db.Users.Any(u => u.Phone == phone))
+                    {
+                        TempData["Error"] = "A user with this phone number already exists.";
+                        return View();
+                    }
+
+                    if (db.Users.Any(u => u.Email == email))
+                    {
+                        TempData["Error"] = "A user with this email already exists.";
+                        return View();
+                    }
+
+                    if (db.Users.Any(u => u.NIDNumber == nidNumber))
+                    {
+                        TempData["Error"] = "A user with this NID already exists.";
+                        return View();
+                    }
+
                     User newUser = new User
                     {
                         FullName = fullName,
                         Email = email,
                         Phone = phone,
-                        Password = password,  // ⚠ Hash this in real app
+                        Password = PasswordHelper.HashPassword(password),
                         UserType = "User",
-                        NIDScanPath = "/Uploads/NID/" + nidFileName,
-                        ElectricityBillPath = "/Uploads/Bills/" + billFileName,
+                        NIDNumber = nidNumber,
+                        DateOfBirth = dateOfBirth,
                         CreatedAt = DateTime.Now
                     };
 
@@ -70,11 +119,12 @@ namespace ChhayaNirh.Controllers
                     db.SaveChanges();
                 }
 
+                TempData["Success"] = "Account created successfully! Please login.";
                 return RedirectToAction("Login", "Login");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ViewBag.Error = "Error during signup: " + ex.Message;
+                TempData["Error"] = "Registration failed. Please try again.";
                 return View();
             }
         }
