@@ -10,6 +10,22 @@
 
                 <h2 class="text-center mb-4" style="color:#000000;">Edit Profile</h2>
 
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        @TempData["Error"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        @TempData["Success"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
                 @using (Html.BeginForm("EditProfile", "Profile", FormMethod.Post, new { enctype = "multipart/form-data" }))
                 {
                     @Html.AntiForgeryToken()
@@ -22,17 +38,25 @@
                              width="100" height="100" />
                         <input type="file" class="form-control mb-2" name="ProfilePicture" accept=".jpg,.png,.jpeg" onchange="previewImage(event)" />
 
-                        <!-- Remove profile picture button -->
                         @if (!string.IsNullOrEmpty(Model.ProfilePicturePath))
                         {
                             <button type="submit" name="RemoveProfilePicture" value="true" class="btn btn-warning btn-sm mt-1">Remove Profile Picture</button>
                         }
                     </div>
 
-                    <!-- Email -->
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
                         <input type="email" class="form-control" id="email" name="Email" value="@Model.Email" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="presentAddress" class="form-label">Present Address</label>
+                        <textarea class="form-control" id="presentAddress" name="PresentAddress" rows="3" placeholder="Enter your current address">@Model.PresentAddress</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="permanentAddress" class="form-label">Permanent Address</label>
+                        <textarea class="form-control" id="permanentAddress" name="PermanentAddress" rows="3" placeholder="Enter your permanent address">@Model.PermanentAddress</textarea>
                     </div>
 
                     <div class="d-grid gap-2">

@@ -8,18 +8,31 @@
             <div class="card shadow-sm p-4" style="background-color:#f0f0f0;">
                 <h2 class="text-center mb-4" style="color:#000000;">Login to ChhayaNirh</h2>
 
-                @if (ViewBag.Error != null)
+                @if (TempData["Error"] != null)
                 {
-                    <div class="alert alert-danger">@ViewBag.Error</div>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        @TempData["Error"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        @TempData["Success"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
                 }
 
                 @using (Html.BeginForm("Login", "Login", FormMethod.Post))
                 {
-                    @Html.AntiForgeryToken() <!-- 🔹 Add this line -->
+                    @Html.AntiForgeryToken()
 
                     <div class="mb-3">
                         <label for="phone" class="form-label">Phone Number</label>
-                        <input type="text" class="form-control" id="phone" name="Phone" required />
+                        <input type="text" class="form-control" id="phone" name="Phone"
+                               pattern="01[0-9]{9}"
+                               placeholder="01XXXXXXXXX" required />
                     </div>
 
                     <div class="mb-3">
