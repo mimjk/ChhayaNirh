@@ -176,12 +176,12 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Attributes\JwtAuthorizeAttribute.cs" />
     <Compile Include="Controllers\ChatController.cs" />
-    <Compile Include="Controllers\DefaultController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PostController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\SignupController.cs" />
+    <Compile Include="Controllers\TermsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -194,10 +194,6 @@
     <Compile Include="Migrations\202509012021314_UpdateUserModel.cs" />
     <Compile Include="Migrations\202509012021314_UpdateUserModel.Designer.cs">
       <DependentUpon>202509012021314_UpdateUserModel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202509012059586_UpdateUserModel1.cs" />
-    <Compile Include="Migrations\202509012059586_UpdateUserModel1.Designer.cs">
-      <DependentUpon>202509012059586_UpdateUserModel1.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\202509021455362_AddProfilePicturePath.cs" />
     <Compile Include="Migrations\202509021455362_AddProfilePicturePath.Designer.cs">
@@ -234,12 +230,14 @@
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\Images\banner.jpg" />
-    <Content Include="Content\Images\banner1.jpeg" />
-    <Content Include="Content\Images\banner2.jpeg" />
-    <Content Include="Content\Images\banner3.jpeg" />
-    <Content Include="Content\Images\banner4.jpeg" />
+    <Content Include="Content\Images\banner1.jpg" />
+    <Content Include="Content\Images\banner2.jpg" />
+    <Content Include="Content\Images\banner3.jpg" />
+    <Content Include="Content\Images\banner4.jpg" />
     <Content Include="Content\Images\banner5.jpeg" />
     <Content Include="Content\Images\default-profile.png" />
+    <Content Include="Content\Images\default-profile1.png" />
+    <Content Include="Content\Images\default-profile2.png" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -280,13 +278,13 @@
     <Content Include="Views\Chat\Chat.cshtml" />
     <Content Include="Views\Profile\Profile.cshtml" />
     <Content Include="Views\Profile\EditProfile.cshtml" />
+    <Content Include="Views\Terms\Terms.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Uploads\Bills\" />
     <Folder Include="Uploads\NID\" />
     <Folder Include="Uploads\ProfilePictures\" />
-    <Folder Include="Views\Default\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202508301902010_InitialCreate.resx">
@@ -294,9 +292,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202509012021314_UpdateUserModel.resx">
       <DependentUpon>202509012021314_UpdateUserModel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202509012059586_UpdateUserModel1.resx">
-      <DependentUpon>202509012059586_UpdateUserModel1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202509021455362_AddProfilePicturePath.resx">
       <DependentUpon>202509021455362_AddProfilePicturePath.cs</DependentUpon>

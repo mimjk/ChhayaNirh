@@ -6,7 +6,7 @@
 <main class="container my-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card shadow-sm p-4" style="background-color:#f0f0f0;">
+            <div class="card shadow-sm p-4" style="background-color: #FFFFF0;">
 
                 <h2 class="text-center mb-4" style="color:#000000;">Edit Profile</h2>
 
@@ -33,7 +33,7 @@
                     <!-- Profile Picture Preview + Upload -->
                     <div class="text-center mb-3">
                         <img id="profilePreview"
-                             src="@(string.IsNullOrEmpty(Model.ProfilePicturePath) ? Url.Content("~/Content/images/default-profile.png") : Url.Content(Model.ProfilePicturePath))"
+                             src="@(string.IsNullOrEmpty(Model.ProfilePicturePath) ? Url.Content("~/Content/images/default-profile2.png") : Url.Content(Model.ProfilePicturePath))"
                              class="rounded-circle mb-2"
                              width="100" height="100" />
                         <input type="file" class="form-control mb-2" name="ProfilePicture" accept=".jpg,.png,.jpeg" onchange="previewImage(event)" />
@@ -59,10 +59,14 @@
                         <textarea class="form-control" id="permanentAddress" name="PermanentAddress" rows="3" placeholder="Enter your permanent address">@Model.PermanentAddress</textarea>
                     </div>
 
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary">Update Profile</button>
-                        <a href="@Url.Action("Profile", "Profile")" class="btn btn-secondary">Cancel</a>
+                    <div class="d-flex gap-4">
+                        <button type="submit" class="btn flex-fill"
+                                style="background-color: #5C0002; color: #ffffff; border: none;">
+                            Update Profile
+                        </button>
+                        <a href="@Url.Action("Profile", "Profile")" class="btn btn-secondary flex-fill">Cancel</a>
                     </div>
+
                 }
             </div>
         </div>
