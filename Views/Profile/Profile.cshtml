@@ -6,7 +6,7 @@
 <main class="container my-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card shadow-sm p-4" style="background-color:#f0f0f0;">
+            <div class="card shadow-sm p-4" style="background-color: #FFFFF0;">
 
                 @if (TempData["Success"] != null)
                 {
@@ -18,7 +18,7 @@
 
                 <!-- Profile Picture + Heading -->
                 <div class="d-flex flex-column align-items-center mb-4">
-                    <img src="@(string.IsNullOrEmpty(Model.ProfilePicturePath) ? Url.Content("~/Content/images/default-profile.png") : Url.Content(Model.ProfilePicturePath))"
+                    <img src="@(string.IsNullOrEmpty(Model.ProfilePicturePath) ? Url.Content("~/Content/Images/default-profile2.png") : Url.Content(Model.ProfilePicturePath))"
                          class="rounded-circle mb-3"
                          alt="Profile Picture"
                          width="70" height="70" />
@@ -62,8 +62,12 @@
                 </div>
 
                 <!-- Buttons -->
-                <div class="d-flex justify-content-center mt-4 gap-3">
-                    <a href="@Url.Action("EditProfile", "Profile")" class="btn btn-primary">Edit Profile</a>
+                <div class="d-flex justify-content-center mt-4 gap-4">
+                    <a href="@Url.Action("EditProfile", "Profile")"
+                       class="btn"
+                       style="background-color: #5C0002; color: #fff; border: none; ">
+                        Edit Profile
+                    </a>
                     <a href="@Url.Action("Logout", "Login")" class="btn btn-danger">Logout</a>
                 </div>
             </div>

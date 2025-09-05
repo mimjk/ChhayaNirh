@@ -5,7 +5,7 @@
 <main class="container my-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card shadow-sm p-4" style="background-color:#f0f0f0;">
+            <div class="card shadow-sm p-4" style="background-color: #FFFFF0;">
                 <h2 class="text-center mb-4" style="color:#000000;">Create Your Account</h2>
 
                 @if (TempData["Error"] != null)
@@ -68,12 +68,22 @@
                     <div class="form-check mb-3">
                         <input class="form-check-input" type="checkbox" id="terms" name="Terms" required />
                         <label class="form-check-label" for="terms">
-                            I agree to the <a href="#" style="color:#007BFF;">terms and conditions</a>
+                            I agree to the
+                            @Html.ActionLink(
+                                "terms and conditions",   // link text
+                                "Terms",                  // action
+                                "Terms",                  // controller
+                                null,                     // route values
+                                new { style = "color:#007BFF;", target = "_blank" } // html attributes
+                            )
                         </label>
                     </div>
 
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-dark">Create Account</button>
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn"
+                                style="background-color: #5C0002; color: #ffffff; border: none; width: 200px;">
+                            Create Account
+                        </button>
                     </div>
                 }
 
