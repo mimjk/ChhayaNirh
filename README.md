@@ -6,7 +6,7 @@ SD PROJECT: ChhayaNirh-ছায়ানীড় - House Rent Platform for Dha
 |------------------------|---------------|-------------------------------------|-----------------------|
 | Twaseen Tabassum       | 20220104134   | twaseen.cse.20220104134@aust.edu    | Backend, Frontend     |
 | Mohsin Ul Hassan Nihal | 20220104135   | mohsin.cse.20220104135@aust.edu     | Backend, Frontend     |
-| Ishrat Jahan Mim       | 20220104137   | ishratJahanmim2624@gmail.com        | Backend, Frontend     |
+| Ishrat Jahan Mim       | 20220104137   | ishratjahanmim2624@gmail.com        | Backend, Frontend     |
 
 ## Project Overview
 "ChhayaNirh" is a house rent platform designed for Dhaka, Bangladesh. It connects homeowners and renters, providing secure verification, real-time location viewing via Google Maps, messaging between users, and a safe advance payment system.
