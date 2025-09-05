@@ -35,13 +35,25 @@
                         <li class="nav-item">
                             @Html.ActionLink("💬 Chat", "Chat", "Chat", null, new { @class = "nav-link" })
                         </li>
-                        <li class="nav-item">
-                            @Html.ActionLink("➕ Post", "Post", "Post", null, new { @class = "nav-link" })
-                        </li>
-                        <li class="nav-item">
-                            @Html.ActionLink("👤 Profile", "Profile", "Profile", null, new { @class = "nav-link" })
-                        </li>
 
+                        if (Session["UserType"] != null && Session["UserType"].ToString() == "Admin")
+                        {
+                            <li class="nav-item">
+                                @Html.ActionLink("🛠 Admin Panel", "Admin", "Admin", null, new { @class = "nav-link" })
+                            </li>
+                            <li class="nav-item">
+                                @Html.ActionLink("🚪 Logout", "Logout", "Login", null, new { @class = "nav-link text-danger" })
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                @Html.ActionLink("➕ Post", "Post", "Post", null, new { @class = "nav-link" })
+                            </li>
+                            <li class="nav-item">
+                                @Html.ActionLink("👤 Profile", "Profile", "Profile", null, new { @class = "nav-link" })
+                            </li>
+                        }
                     }
                     else
                     {
@@ -53,6 +65,7 @@
                         </li>
                     }
                 </ul>
+
             </div>
         </div>
     </nav>

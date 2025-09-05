@@ -45,6 +45,12 @@ namespace ChhayaNirh
             );
 
             routes.MapRoute(
+                name: "Admin",
+                url: "Admin",
+                defaults: new { controller = "Admin", action = "Admin" }
+            );
+
+            routes.MapRoute(
                 name: "Terms",
                 url: "Terms",
                 defaults: new { controller = "Terms", action = "Terms" }
