@@ -1,0 +1,163 @@
+﻿/* Additional styles for PostDetails page */
+
+/* Contact button styling */
+.contact-btn {
+    background: none;
+    border: none;
+    color: #65676b;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex: 1;
+    justify-content: center;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+    .contact-btn:hover {
+        background-color: #f2f3f4;
+        transform: scale(1.05);
+        color: #28a745;
+    }
+
+    .contact-btn i {
+        color: #28a745;
+    }
+
+/* Enhanced post actions section for details page */
+.post-details-actions {
+    border-top: 1px solid #e4e6ea;
+    padding: 15px;
+    display: flex;
+    justify-content: space-around;
+    background: #fafbfc;
+}
+
+/* Post images grid for details page */
+.post-details .post-images {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    margin-top: 15px;
+}
+
+    .post-details .post-images img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 8px;
+        transition: transform 0.3s ease;
+        cursor: pointer;
+    }
+
+        .post-details .post-images img:hover {
+            transform: scale(1.05);
+        }
+
+/* Enhanced post content for details page */
+.post-content-details {
+    padding: 20px;
+    background: white;
+}
+
+    .post-content-details .post-details {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        border-left: 4px solid #1877f2;
+    }
+
+        .post-content-details .post-details h6 {
+            color: #1877f2;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .post-content-details .post-details .row {
+            margin-bottom: 10px;
+        }
+
+        .post-content-details .post-details small {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+/* Description styling */
+.post-description {
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #e4e6ea;
+    margin-bottom: 20px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .comment-page-container {
+        margin: 0;
+        border-radius: 0;
+    }
+
+    .post-details .post-images {
+        grid-template-columns: 1fr;
+    }
+
+    .post-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .action-btn {
+        justify-content: center;
+        flex: none;
+    }
+}
+
+/* Image modal for viewing full size images */
+.image-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    cursor: pointer;
+}
+
+    .image-modal img {
+        display: block;
+        margin: auto;
+        max-width: 90%;
+        max-height: 90%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 8px;
+    }
+
+    .image-modal .close {
+        position: absolute;
+        top: 15px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+        .image-modal .close:hover {
+            color: #bbb;
+        }

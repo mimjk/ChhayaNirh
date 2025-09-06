@@ -1,0 +1,213 @@
+﻿@model ChhayaNirh.Models.Post
+@{
+    ViewBag.Title = "Comments";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- External Stylesheet -->
+<link href="~/Content/CommentModal.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+
+<div class="comment-page-container">
+    <!-- Page Header -->
+    <div class="comment-page-header">
+        <button class="back-btn" onclick="goBack()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h3 class="page-title">@Model.User.FullName's post</h3>
+    </div>
+
+    <!-- Post Content -->
+    <div class="post-content-page">
+        <div class="post-card">
+            <div class="post-header">
+                <img src="@(string.IsNullOrEmpty(Model.User?.ProfilePicturePath) ? Url.Content("~/Content/images/default-profile.png") : Url.Content(Model.User.ProfilePicturePath))"
+                     alt="Profile" class="profile-pic" style="width: 50px; height: 50px;" />
+                <div class="post-user-info">
+                    <h6>@Model.User.FullName</h6>
+                    <p class="post-time">@Model.CreatedAt.ToString("MMM dd, yyyy 'at' HH:mm")</p>
+                </div>
+                <span class="badge @(Model.PostType == "Owner" ? "owner-badge" : "renter-badge") badge-post-type">
+                    @Model.PostType
+                </span>
+            </div>
+
+            <div class="post-content">
+                <div class="post-details">
+                    <h6 class="mb-2">@Model.HouseType in @Model.Area</h6>
+
+                    @if (Model.PostType == "Owner")
+                    {
+                        <div class="row">
+                            <div class="col-6">
+                                <small><strong>Bedrooms:</strong> @Model.Bedrooms</small>
+                            </div>
+                            <div class="col-6">
+                                <small><strong>Bathrooms:</strong> @Model.Bathrooms</small>
+                            </div>
+                            <div class="col-12 mt-1">
+                                <small><strong>Rent:</strong> <span class="text-success fw-bold">৳@Model.RentAmount</span></small>
+                            </div>
+                        </div>
+                    }
+                    else if (Model.PostType == "Renter")
+                    {
+                        <div class="row">
+                            <div class="col-12">
+                                <small><strong>Budget:</strong> <span class="text-primary fw-bold">৳@Model.Budget</span></small>
+                            </div>
+                            <div class="col-12 mt-1">
+                                <small><strong>Preferred Type:</strong> @Model.HouseType</small>
+                            </div>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.Amenities))
+                    {
+                        <div class="mt-2">
+                            <small><strong>Amenities:</strong> @Model.Amenities</small>
+                        </div>
+                    }
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.Description))
+                {
+                    <p class="mb-2">@Model.Description</p>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.MediaPaths))
+                {
+                    <div class="post-images">
+                        @foreach (var imagePath in Model.MediaPaths.Split(','))
+                        {
+                            <img src="@Url.Content(imagePath.Trim())" alt="Post Image" />
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="comments-section-page" id="comments-list">
+        <div class="loading-comments">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading comments...</p>
+        </div>
+    </div>
+
+    <!-- Comment Input -->
+    <div class="comment-input-section">
+        <div class="comment-input-area">
+            <img src="@ViewBag.ProfilePicturePath" alt="Your Profile" class="profile-pic" style="width: 32px; height: 32px;" />
+            <textarea class="comment-input" id="commentText" placeholder="Write a comment..." rows="1"></textarea>
+            <button class="send-btn" id="sendComment" disabled>
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript Logic -->
+<script>
+    $(document).ready(function () {
+        loadComments();
+
+        $('#commentText').on('input', function () {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+            $('#sendComment').prop('disabled', $(this).val().trim() === '');
+        });
+
+        $('#sendComment').click(function () {
+            sendComment();
+        });
+
+        $('#commentText').keydown(function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendComment();
+            }
+        });
+
+        function sendComment() {
+            var commentText = $('#commentText').val().trim();
+            if (commentText === '') return;
+
+            $('#sendComment').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
+
+            $.ajax({
+                url: '@Url.Action("AddComment", "Post")',
+                type: 'POST',
+                data: {
+                    postId: @ViewBag.PostId,
+                    commentText: commentText
+                },
+                success: function (data) {
+                    if (data.success) {
+                        $('#commentText').val('').css('height', 'auto');
+                        $('#sendComment').prop('disabled', true);
+                        showMessage('Comment posted successfully!', 'success');
+                        setTimeout(loadComments, 500);
+                    } else {
+                        showMessage('Error posting comment: ' + (data.error || 'Unknown error'), 'error');
+                    }
+                    $('#sendComment').html('<i class="fas fa-paper-plane"></i>');
+                },
+                error: function (xhr, status, error) {
+                    showMessage('Error posting comment. Please try again.', 'error');
+                    $('#sendComment').html('<i class="fas fa-paper-plane"></i>').prop('disabled', false);
+                }
+            });
+        }
+
+        function loadComments() {
+            $.ajax({
+                url: '@Url.Action("GetComments", "Post")',
+                type: 'GET',
+                data: { postId: @ViewBag.PostId },
+                success: function (data) {
+                    $('#comments-list').html(data);
+                    var commentsContainer = $('#comments-list');
+                    setTimeout(function () {
+                        commentsContainer.scrollTop(commentsContainer[0].scrollHeight);
+                    }, 100);
+                },
+                error: function (xhr, status, error) {
+                    $('#comments-list').html(
+                        '<div class="no-comments">' +
+                        '<i class="fas fa-exclamation-triangle"></i>' +
+                        '<p>Error loading comments. Please refresh the page.</p>' +
+                        '<small>Error: ' + status + '</small>' +
+                        '</div>'
+                    );
+                }
+            });
+        }
+
+        function showMessage(message, type) {
+            var messageClass = type === 'success' ? 'success-message' : 'error-message';
+            var messageHtml = '<div class="' + messageClass + '">' + message + '</div>';
+            $('.success-message, .error-message').remove();
+            $('#comments-list').prepend(messageHtml);
+            setTimeout(function () {
+                $('.' + messageClass).fadeOut(function () {
+                    $(this).remove();
+                });
+            }, 3000);
+        }
+
+        setInterval(loadComments, 15000);
+        $(window).focus(loadComments);
+    });
+
+    function goBack() {
+        if (document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
+            window.history.back();
+        } else {
+            window.location.href = '@Url.Action("Post", "Post")';
+        }
+    }
+</script>

@@ -1,0 +1,33 @@
+﻿@model IEnumerable<ChhayaNirh.Models.Comment>
+
+@if (Model != null && Model.Any())
+{
+    foreach (var comment in Model) // ✅ Razor syntax corrected: no @ before foreach
+    {
+        <div class="comment-item d-flex align-items-start mb-3">
+            <img src="@(string.IsNullOrEmpty(comment.User?.ProfilePicturePath)
+                        ? Url.Content("~/Content/images/default-profile.png")
+                        : Url.Content(comment.User.ProfilePicturePath))"
+                 alt="Profile"
+                 class="me-2"
+                 style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;" />
+
+            <div class="comment-bubble bg-light p-2 rounded">
+                <div class="comment-author fw-bold">
+                    @(comment.User?.FullName ?? "Unknown User")
+                </div>
+                <p class="comment-text mb-1">@comment.CommentText</p>
+                <small class="comment-time text-muted">
+                    @comment.CreatedAt.ToString("MMM dd, yyyy HH:mm")
+                </small>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="no-comments text-center text-muted py-3">
+        <i class="fas fa-comment-slash fa-2x"></i>
+        <p class="mb-0 mt-2">No comments yet. Be the first to comment!</p>
+    </div>
+}
