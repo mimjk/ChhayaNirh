@@ -1,5 +1,181 @@
 ﻿@{
     ViewBag.Title = "Post";
 }
-<h2>Post</h2>
-<p>Post page will be designed here.</p>
+
+<link href="~/Content/post.css" rel="stylesheet" />
+
+<div class="container">
+    <h2>Rental Listings</h2>
+
+    <!-- Create Post Section -->
+    <div class="card p-3 mb-4 shadow-sm" style="background-color:#ffffff;">
+        <div class="d-flex align-items-center">
+            <a href="@Url.Action("Profile", "Profile")">
+                <img src="@ViewBag.ProfilePicturePath"
+                     alt=""
+                     class="rounded-circle"
+                     width="50" height="50"
+                     style="object-fit: cover;" />
+            </a>
+            <a href="@Url.Action("CreatePost", "Post")" class="flex-grow-1 ms-3 text-decoration-none">
+                <div class="form-control bg-light" style="cursor: pointer;">
+                    What's on your mind?
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter Toggle Button -->
+    <button class="btn btn-outline-primary mb-3" type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#filterPanel"
+            aria-expanded="false"
+            aria-controls="filterPanel">
+        Filter
+    </button>
+
+    <!-- Collapsible Filter Panel -->
+    <div class="collapse" id="filterPanel">
+        <form method="get" action="@Url.Action("Post", "Post")" class="card card-body">
+            <div class="mb-3">
+                <label>Post Type:</label>
+                <select name="postType" class="form-select">
+                    <option value="">All</option>
+                    <option value="Owner">Owner's</option>
+                    <option value="Renter">Renter's</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Area:</label>
+                <div class="d-flex flex-wrap gap-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="areas" value="Gulshan" id="areaGulshan">
+                        <label class="form-check-label" for="areaGulshan">Gulshan</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="areas" value="Banani" id="areaBanani">
+                        <label class="form-check-label" for="areaBanani">Banani</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="areas" value="Dhanmondi" id="areaDhanmondi">
+                        <label class="form-check-label" for="areaDhanmondi">Dhanmondi</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="areas" value="Uttara" id="areaUttara">
+                        <label class="form-check-label" for="areaUttara">Uttara</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="areas" value="Mirpur" id="areaMirpur">
+                        <label class="form-check-label" for="areaMirpur">Mirpur</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label>Budget Range:</label>
+                <div class="d-flex gap-2">
+                    <input type="number" name="minBudget" class="form-control" placeholder="Min" />
+                    <input type="number" name="maxBudget" class="form-control" placeholder="Max" />
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Apply Filters</button>
+        </form>
+    </div>
+
+    <!-- Posts Grid - 3 columns with minimal information -->
+    <div class="row">
+        @foreach (var post in Model)
+        {
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="post-card cursor-pointer" onclick="openPostDetails(@post.Id)" style="cursor: pointer; transition: transform 0.2s; min-height: 180px;">
+                    <!-- Post Header -->
+                    <div class="post-header">
+                        <img src="@(string.IsNullOrEmpty(post.User?.ProfilePicturePath) ? Url.Content("~/Content/images/default-profile.png") : Url.Content(post.User.ProfilePicturePath))"
+                             alt="Profile"
+                             class="profile-pic" />
+                        <div class="post-user-info">
+                            <h6>@(post.User?.FullName ?? "Unknown User")</h6>
+                            <p class="post-time">@post.CreatedAt.ToString("MMM dd, yyyy")</p>
+                        </div>
+                        <span class="badge @(post.PostType == "Owner" ? "owner-badge" : "renter-badge") badge-post-type ms-auto">
+                            @post.PostType
+                        </span>
+                    </div>
+
+                    <!-- Post Content - Only Location and Price -->
+                    <div class="post-content">
+                        <div class="post-details">
+                            <h5 class="mb-3 text-primary">@post.Area</h5>
+
+                            @if (post.PostType == "Owner")
+                            {
+                                <div class="text-center">
+                                    <h4 class="text-success fw-bold mb-0">৳@post.RentAmount</h4>
+                                    <small class="text-muted">per month</small>
+                                </div>
+                            }
+                            else if (post.PostType == "Renter")
+                            {
+                                <div class="text-center">
+                                    <h4 class="text-primary fw-bold mb-0">৳@post.Budget</h4>
+                                    <small class="text-muted">budget range</small>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Show first image if available -->
+                        @if (!string.IsNullOrEmpty(post.MediaPaths))
+                        {
+                            var firstImage = post.MediaPaths.Split(',')[0].Trim();
+                            <div class="post-images mt-3">
+                                <img src="@Url.Content(firstImage)" alt="Post Image" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px;" />
+                            </div>
+                        }
+
+                        <!-- View Details Button -->
+                        <div class="text-center mt-3">
+                            <small class="text-muted">Click to view full details</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Include jQuery first, then Font Awesome -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+
+<script>
+    function openPostDetails(postId) {
+        window.location.href = '@Url.Action("PostDetails", "Post")' + '?id=' + postId;
+    }
+
+    // Add hover effect
+    $(document).ready(function() {
+        $('.post-card').hover(
+            function() {
+                $(this).css('transform', 'scale(1.02)');
+                $(this).css('box-shadow', '0 4px 12px rgba(0, 0, 0, 0.15)');
+            },
+            function() {
+                $(this).css('transform', 'scale(1)');
+                $(this).css('box-shadow', '0 1px 2px rgba(0, 0, 0, 0.1)');
+            }
+        );
+    });
+</script>
+
+<style>
+    .cursor-pointer:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .post-card {
+        transition: all 0.2s ease;
+    }
+</style>
