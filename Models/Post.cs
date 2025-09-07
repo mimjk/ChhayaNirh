@@ -20,8 +20,6 @@ namespace ChhayaNirh.Models
         public string HouseType { get; set; } // Flat, Apartment, etc.
         public int? Bedrooms { get; set; }
         public int? Bathrooms { get; set; }
-
-        [Required(ErrorMessage = "Please enter rent amount")]
         public decimal? RentAmount { get; set; } // For Owner
         public decimal? Budget { get; set; } // For Renter
 
@@ -35,6 +33,9 @@ namespace ChhayaNirh.Models
         [ForeignKey("UserId")]
         public virtual User User { get; set; } // Navigation property
         public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Like> Likes { get; set; }
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
 
     }
 }

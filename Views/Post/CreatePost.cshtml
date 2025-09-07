@@ -2,10 +2,16 @@
     ViewBag.Title = "Create Post";
 }
 
+@section styles {
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Your custom CSS -->
+    <link rel="stylesheet" href="~/Content/CreatePost.css" />
+}
+
 <div class="container mt-5">
     <h2 class="mb-4 text-center">📝 Create a New Post</h2>
 
-    <!-- Show validation message -->
     @if (!ViewData.ModelState.IsValid)
     {
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -71,12 +77,19 @@
             </div>
         </div>
 
-        <!-- Common Fields -->
+        <!-- Location & Description -->
         <h5 class="mt-4">📍 Location & Description</h5>
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label class="form-label">Area</label>
-                <input type="text" name="Area" class="form-control" />
+                <input type="text" name="Area" id="Area" class="form-control" onblur="moveMarkerToArea()" />
+            </div>
+            <div class="col-12 mb-3">
+                <label class="form-label">Select Location</label>
+                <div id="map" style="height:400px; width:100%;"></div>
+                <input type="hidden" name="Latitude" id="Latitude" />
+                <input type="hidden" name="Longitude" id="Longitude" />
+                <p>Selected Coordinates: <span id="latlngDisplay">23.8103, 90.4125</span></p>
             </div>
             <div class="col-md-6 mb-3">
                 <label class="form-label">Upload Photos/Videos</label>
@@ -89,20 +102,72 @@
         </div>
 
         <div class="text-center mt-4">
-            <button type="submit"
-                    class="px-5"
-                    style="background-color:#5C0002; border:2px solid #5C0002; color:#fff; border-radius:6px; padding:8px 24px;">
-                🚀 Submit Post
-            </button>
+            <button type="submit">🚀 Submit Post</button>
         </div>
     </form>
 </div>
 
-<!-- JavaScript for Dynamic Field Toggle -->
-<script>
-    function toggleFields() {
-        const type = document.getElementById("postType").value;
-        document.getElementById("ownerFields").style.display = type === "Owner" ? "block" : "none";
-        document.getElementById("renterFields").style.display = type === "Renter" ? "block" : "none";
-    }
-</script>
+@section scripts {
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        function initMap() {
+            var map = L.map('map').setView([23.8103, 90.4125], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            var marker = L.marker([23.8103, 90.4125], { draggable: true }).addTo(map);
+
+            function updateLatLng(lat, lng) {
+                document.getElementById('Latitude').value = lat;
+                document.getElementById('Longitude').value = lng;
+                document.getElementById('latlngDisplay').textContent = lat.toFixed(6) + ', ' + lng.toFixed(6);
+            }
+
+            updateLatLng(marker.getLatLng().lat, marker.getLatLng().lng);
+
+            marker.on('dragend', function (e) {
+                updateLatLng(e.target.getLatLng().lat, e.target.getLatLng().lng);
+            });
+
+            map.on('click', function (e) {
+                marker.setLatLng(e.latlng);
+                updateLatLng(e.latlng.lat, e.latlng.lng);
+            });
+
+            window.moveMarkerToArea = function () {
+                var area = document.getElementById("Area").value.trim();
+                if (!area) return;
+                fetch("https://nominatim.openstreetmap.org/search?format=json&q=" + encodeURIComponent(area))
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data && data.length > 0) {
+                            var lat = parseFloat(data[0].lat);
+                            var lon = parseFloat(data[0].lon);
+                            marker.setLatLng([lat, lon]);
+                            map.setView([lat, lon], 15);
+                            updateLatLng(lat, lon);
+                        }
+                    }).catch(err => console.error(err));
+            };
+
+            // Force proper sizing inside card/container
+            setTimeout(() => map.invalidateSize(), 500);
+        }
+
+        window.addEventListener('load', initMap);
+
+        // Toggle Owner/Renter fields
+        function toggleFields() {
+            var type = document.getElementById("postType").value;
+            document.getElementById("ownerFields").style.display = type === "Owner" ? "block" : "none";
+            document.getElementById("renterFields").style.display = type === "Renter" ? "block" : "none";
+
+            // After toggle, force map resize in case layout changed
+            if (window.L && window.map) {
+                setTimeout(() => window.map.invalidateSize(), 300);
+            }
+        }
+    </script>
+}

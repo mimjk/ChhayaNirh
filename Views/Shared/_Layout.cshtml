@@ -6,6 +6,7 @@
     <title>@ViewBag.Title - 🏠 ChhayaNirh-ছায়ানীড়</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @RenderSection("styles", required: false)  <!-- page-specific CSS -->
 
     <!-- Custom navbar link styles -->
     <style>
@@ -98,6 +99,6 @@
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+    @RenderSection("scripts", required: false)   <!-- page-specific JS -->
 </body>
 </html>

@@ -34,6 +34,19 @@ namespace ChhayaNirh.Controllers
             post.CreatedAt = DateTime.Now;
             post.LikeCount = 0; // Initialize like count
 
+            // Save Latitude and Longitude from form
+            if (Request.Form["Latitude"] != null && Request.Form["Longitude"] != null)
+            {
+                if (double.TryParse(Request.Form["Latitude"], out double lat))
+                {
+                    post.Latitude = lat;
+                }
+                if (double.TryParse(Request.Form["Longitude"], out double lng))
+                {
+                    post.Longitude = lng;
+                }
+            }
+
             // ✅ Check for required fields before saving
             if (!ModelState.IsValid)
             {
@@ -125,9 +138,15 @@ namespace ChhayaNirh.Controllers
         }
 
         // NEW: Post Details Action
-        public ActionResult PostDetails(int id)
+        public ActionResult PostDetails(int? id) // make id nullable
         {
-            var post = db.Posts.Include("User").FirstOrDefault(p => p.Id == id);
+            if (id == null)
+            {
+                // If no id provided, redirect to Post list or show error
+                return RedirectToAction("Post");
+            }
+
+            var post = db.Posts.Include("User").FirstOrDefault(p => p.Id == id.Value);
             if (post == null)
             {
                 return HttpNotFound();
@@ -141,11 +160,52 @@ namespace ChhayaNirh.Controllers
                 : Url.Content(user.ProfilePicturePath);
 
             // Check if current user liked this post
-            var isLiked = db.Likes.Any(l => l.PostId == id && l.UserId == userId);
+            var isLiked = db.Likes.Any(l => l.PostId == id.Value && l.UserId == userId);
             ViewBag.IsLiked = isLiked;
 
-            ViewBag.PostId = id;
+            ViewBag.PostId = id.Value;
             return View(post);
+        }
+
+        //For Delete Post
+        [HttpPost]
+        public JsonResult DeletePost(int id)
+        {
+            try
+            {
+                if (Session["UserId"] == null)
+                    return Json(new { success = false, error = "User not logged in" });
+
+                int userId = Convert.ToInt32(Session["UserId"]);
+                var post = db.Posts.Include("Comments").Include("Likes").FirstOrDefault(p => p.Id == id);
+
+                if (post == null)
+                    return Json(new { success = false, error = "Post not found" });
+
+                if (post.UserId != userId)
+                    return Json(new { success = false, error = "You are not authorized to delete this post" });
+
+                // Delete related comments
+                if (post.Comments != null && post.Comments.Any())
+                {
+                    db.Comments.RemoveRange(post.Comments);
+                }
+
+                // Delete related likes
+                if (post.Likes != null && post.Likes.Any())
+                {
+                    db.Likes.RemoveRange(post.Likes);
+                }
+
+                db.Posts.Remove(post);
+                db.SaveChanges();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
         }
 
         // AJAX method to toggle likes (like/unlike)
@@ -308,5 +368,6 @@ namespace ChhayaNirh.Controllers
             ViewBag.PostId = postId;
             return View(post);
         }
+
     }
 }
