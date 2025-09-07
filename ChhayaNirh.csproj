@@ -225,6 +225,10 @@
     <Compile Include="Migrations\202509071617489_UpdatePostModel.Designer.cs">
       <DependentUpon>202509071617489_UpdatePostModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202509071835562_AddNIDVerificationToUser.cs" />
+    <Compile Include="Migrations\202509071835562_AddNIDVerificationToUser.Designer.cs">
+      <DependentUpon>202509071835562_AddNIDVerificationToUser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\Comment.cs" />
@@ -308,6 +312,7 @@
     <Content Include="Views\Post\_Comments.cshtml" />
     <Content Include="Views\Post\CommentModal.cshtml" />
     <Content Include="Views\Post\PostDetails.cshtml" />
+    <Content Include="Views\Profile\VerifyProfile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -339,6 +344,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202509071617489_UpdatePostModel.resx">
       <DependentUpon>202509071617489_UpdatePostModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202509071835562_AddNIDVerificationToUser.resx">
+      <DependentUpon>202509071835562_AddNIDVerificationToUser.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

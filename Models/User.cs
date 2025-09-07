@@ -42,6 +42,8 @@ namespace ChhayaNirh.Models
         public string ProfilePicturePath { get; set; }
         public string PresentAddress { get; set; } // New field
         public string PermanentAddress { get; set; } // Add this line
+        public string NIDDocumentPath { get; set; }  // File path of uploaded NID
+        public bool IsVerified { get; set; } = false;  // Admin will mark true after approval
         public DateTime CreatedAt { get; set; }
     }
 }
