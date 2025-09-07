@@ -34,6 +34,13 @@ namespace ChhayaNirh.Controllers
             post.CreatedAt = DateTime.Now;
             post.LikeCount = 0; // Initialize like count
 
+            // ✅ Check for required fields before saving
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Please fill up all required information.";
+                return View(post); // Return to form with entered data
+            }
+
             // Handle media upload
             if (MediaFiles != null && MediaFiles.Length > 0)
             {
@@ -63,7 +70,7 @@ namespace ChhayaNirh.Controllers
             var user = db.Users.Find(userId);
 
             ViewBag.ProfilePicturePath = string.IsNullOrEmpty(user.ProfilePicturePath)
-                ? Url.Content("~/Content/images/default-profile.png")
+                ? Url.Content("~/Content/Images/default-profile2.png")
                 : Url.Content(user.ProfilePicturePath);
 
             return View();
@@ -75,7 +82,7 @@ namespace ChhayaNirh.Controllers
             var user = db.Users.Find(userId);
 
             ViewBag.ProfilePicturePath = string.IsNullOrEmpty(user.ProfilePicturePath)
-                ? Url.Content("~/Content/images/default-profile.png")
+                ? Url.Content("~/Content/Images/default-profile2.png")
                 : Url.Content(user.ProfilePicturePath);
 
             var posts = db.Posts.Include("User").AsQueryable();
@@ -130,7 +137,7 @@ namespace ChhayaNirh.Controllers
             var user = db.Users.Find(userId);
 
             ViewBag.ProfilePicturePath = string.IsNullOrEmpty(user.ProfilePicturePath)
-                ? Url.Content("~/Content/images/default-profile.png")
+                ? Url.Content("~/Content/Images/default-profile2.png")
                 : Url.Content(user.ProfilePicturePath);
 
             // Check if current user liked this post
@@ -295,7 +302,7 @@ namespace ChhayaNirh.Controllers
             var user = db.Users.Find(userId);
 
             ViewBag.ProfilePicturePath = string.IsNullOrEmpty(user.ProfilePicturePath)
-                ? Url.Content("~/Content/images/default-profile.png")
+                ? Url.Content("~/Content/Images/default-profile2.png")
                 : Url.Content(user.ProfilePicturePath);
 
             ViewBag.PostId = postId;

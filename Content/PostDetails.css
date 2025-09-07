@@ -161,3 +161,36 @@
         .image-modal .close:hover {
             color: #bbb;
         }
+
+/* Send button beside comment input */
+.send-btn {
+    background-color: #5C0002 !important;
+    border: 2px solid #5C0002 !important;
+    color: #fff !important;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .send-btn:hover,
+    .send-btn:focus,
+    .send-btn:active {
+        background-color: #7a1a1c !important;
+        border-color: #7a1a1c !important;
+        color: #fff !important;
+    }
+
+    /* Disabled state */
+    .send-btn:disabled {
+        background-color: #5C0002 !important;
+        color: #fff !important;
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+
+.comment-page-container .post-card .post-user-info h6 {
+    color: #5C0002 !important;
+}
+
+

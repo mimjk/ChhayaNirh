@@ -17,29 +17,19 @@
 
     <p style="color:#000000;">
         You can also reach out to us via the
-        @if (Session["UserId"] != null)
-        {
-            <!-- User logged in → internal chat page -->
-            <a href="@Url.Action("Chat", "Chat")" style="color:#007BFF;">Chat</a>
-        }
-        else
-        {
-            <!-- User not logged in → open Chatbase widget -->
-            <a href="javascript:void(0);" style="color:#007BFF;" onclick="openChatbot()">Chat</a>
-        }
+        <a href="javascript:void(0);" style="color:#007BFF;" onclick="openChat()">
+            Chat
+        </a>
         feature on the website.
     </p>
 
     <script>
-    function openChatbot() {
-        // Chatbase automatically creates a floating button widget
-        // This opens it programmatically
-        if (window.chatbase) {
-            window.chatbase('open');
-        } else {
-            alert("Chatbot is not available right now.");
+        function openChat() {
+            if (window.chatbase) {
+                window.chatbase('open'); // Open the Chatbot
+            } else {
+                alert("Chatbot is not available right now.");
+            }
         }
-    }
     </script>
-
 </main>

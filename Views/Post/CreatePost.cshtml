@@ -5,7 +5,16 @@
 <div class="container mt-5">
     <h2 class="mb-4 text-center">📝 Create a New Post</h2>
 
-    <form method="post" enctype="multipart/form-data" asp-action="CreatePost" class="card p-4 shadow-sm">
+    <!-- Show validation message -->
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            Please fill up the information boxes first.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <form method="post" enctype="multipart/form-data" asp-action="CreatePost" class="card p-4 shadow-sm" style="background-color: #FFFFF0;">
         <!-- Post Type Selector -->
         <div class="mb-3">
             <label for="postType" class="form-label">Who are you?</label>
@@ -80,7 +89,11 @@
         </div>
 
         <div class="text-center mt-4">
-            <button type="submit" class="btn btn-primary px-5">🚀 Submit Post</button>
+            <button type="submit"
+                    class="px-5"
+                    style="background-color:#5C0002; border:2px solid #5C0002; color:#fff; border-radius:6px; padding:8px 24px;">
+                🚀 Submit Post
+            </button>
         </div>
     </form>
 </div>

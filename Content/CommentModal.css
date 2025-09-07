@@ -203,3 +203,32 @@
     color: #888;
     padding: 20px;
 }
+
+/* Send button */
+.send-btn {
+    background-color: #5C0002 !important;
+    border: 2px solid #5C0002 !important;
+    color: #fff !important;
+}
+
+    .send-btn:hover,
+    .send-btn:focus,
+    .send-btn:active {
+        background-color: #7a1a1c !important;
+        border-color: #7a1a1c !important;
+        color: #fff !important;
+    }
+
+    /* Disabled state */
+    .send-btn:disabled {
+        background-color: #e4e6ea !important;
+        border-color: #e4e6ea !important;
+        color: #65676b !important;
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+
+/* Comment author name color */
+.comments-section-page .comment-author {
+    color: #5C0002 !important; /* Dark red */
+}
