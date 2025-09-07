@@ -154,8 +154,10 @@
 
 <script>
     function openPostDetails(postId) {
-        window.location.href = '@Url.Action("PostDetails", "Post")' + '?id=' + postId;
-    }
+    if (!postId) return; // safeguard
+    window.location.href = '@Url.Action("PostDetails", "Post")' + '?id=' + postId;
+}
+
 
     // Add hover effect
     $(document).ready(function() {

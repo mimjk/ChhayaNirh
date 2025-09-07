@@ -229,6 +229,18 @@
     <Compile Include="Migrations\202509071835562_AddNIDVerificationToUser.Designer.cs">
       <DependentUpon>202509071835562_AddNIDVerificationToUser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202509071949592_AddLatLongToPost.cs" />
+    <Compile Include="Migrations\202509071949592_AddLatLongToPost.Designer.cs">
+      <DependentUpon>202509071949592_AddLatLongToPost.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202509072254558_AddLikesToPost.cs" />
+    <Compile Include="Migrations\202509072254558_AddLikesToPost.Designer.cs">
+      <DependentUpon>202509072254558_AddLikesToPost.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202509072316050_MakeRentAmountOptional.cs" />
+    <Compile Include="Migrations\202509072316050_MakeRentAmountOptional.Designer.cs">
+      <DependentUpon>202509072316050_MakeRentAmountOptional.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\Comment.cs" />
@@ -255,6 +267,7 @@
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\CommentModal.css" />
+    <Content Include="Content\CreatePost.css" />
     <Content Include="Content\Images\banner.jpg" />
     <Content Include="Content\Images\banner1.jpg" />
     <Content Include="Content\Images\banner2.jpg" />
@@ -347,6 +360,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202509071835562_AddNIDVerificationToUser.resx">
       <DependentUpon>202509071835562_AddNIDVerificationToUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202509071949592_AddLatLongToPost.resx">
+      <DependentUpon>202509071949592_AddLatLongToPost.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202509072254558_AddLikesToPost.resx">
+      <DependentUpon>202509072254558_AddLikesToPost.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202509072316050_MakeRentAmountOptional.resx">
+      <DependentUpon>202509072316050_MakeRentAmountOptional.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
