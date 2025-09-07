@@ -148,5 +148,62 @@ namespace ChhayaNirh.Controllers
 
             throw new UnauthorizedAccessException("User not authenticated");
         }
+
+        [HttpGet]
+        [JwtAuthorize]
+        public ActionResult VerifyProfile()
+        {
+            int userId = GetCurrentUserId();
+            using (var db = new ApplicationDbContext())
+            {
+                var user = db.Users.Find(userId);
+                if (user == null)
+                    return HttpNotFound();
+
+                return View(user);
+            }
+        }
+
+        [HttpPost]
+        [JwtAuthorize]
+        public ActionResult VerifyProfile(HttpPostedFileBase nidFile)
+        {
+            int userId = GetCurrentUserId();
+            using (var db = new ApplicationDbContext())
+            {
+                var user = db.Users.Find(userId);
+                if (user == null)
+                    return HttpNotFound();
+
+                if (nidFile != null && nidFile.ContentLength > 0)
+                {
+                    string[] allowedTypes = { ".jpg", ".jpeg", ".png", ".pdf" };
+                    string extension = Path.GetExtension(nidFile.FileName).ToLower();
+
+                    if (!allowedTypes.Contains(extension))
+                    {
+                        TempData["Error"] = "Only JPG, JPEG, PNG, or PDF files are allowed.";
+                        return RedirectToAction("VerifyProfile");
+                    }
+
+                    string fileName = Guid.NewGuid() + extension;
+                    string folder = Server.MapPath("~/Uploads/NID/");
+                    Directory.CreateDirectory(folder);
+                    string path = Path.Combine(folder, fileName);
+                    nidFile.SaveAs(path);
+
+                    user.NIDDocumentPath = "/Uploads/NID/" + fileName;
+                    user.IsVerified = false; // Admin must approve
+
+                    db.SaveChanges();
+
+                    TempData["Success"] = "NID uploaded successfully. Please wait for admin verification.";
+                    return RedirectToAction("Profile");
+                }
+
+                TempData["Error"] = "Please upload a valid NID file.";
+                return RedirectToAction("VerifyProfile");
+            }
+        }
     }
 }
