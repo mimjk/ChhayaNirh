@@ -6,6 +6,24 @@
     <title>@ViewBag.Title - 🏠 ChhayaNirh-ছায়ানীড়</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+
+    <!-- Custom navbar link styles -->
+    <style>
+        /* Make navbar links look like the brand link */
+        .navbar-nav .nav-link {
+            color: #ffffff !important; /* White text */
+            text-decoration: none; /* Remove underline */
+            transition: none !important; /* Remove hover transition */
+        }
+
+            /* Prevent hover color change */
+            .navbar-nav .nav-link:hover,
+            .navbar-nav .nav-link:focus {
+                color: #ffffff !important; /* Keep color same on hover/focus */
+                background: none !important; /* Remove background highlight */
+                box-shadow: none !important; /* Remove any shadow */
+            }
+    </style>
 </head>
 
 <script>

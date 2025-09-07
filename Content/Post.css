@@ -23,7 +23,7 @@
 .post-user-info h6 {
     margin: 0;
     font-weight: 600;
-    color: #1877f2;
+    color: #5C0002;
 }
 
 .post-time {
@@ -188,3 +188,41 @@
     color: #65676b !important;
     font-size: 11px;
 }
+
+.custom-filter-btn {
+    background-color: #5C0002 !important;
+    border-color: #5C0002 !important;
+    color: #fff !important;
+    padding: 8px 24px; /* medium size */
+    font-size: 15px;
+    border-radius: 6px;
+    margin-right: 30px; /* push left from edge */
+    margin-bottom: 10px;
+}
+
+button.custom-filter-btn {
+    background-color: #5C0002 !important;
+    border-color: #5C0002 !important;
+    color: #fff !important;
+}
+
+#filterPanel {
+    margin-bottom: 20px; /* increase gap between filter and posts */
+}
+
+.btn-outline-primary {
+    color: #5C0002 !important;
+    border-color: #5C0002 !important;
+}
+
+    .btn-outline-primary:hover,
+    .btn-outline-primary:focus,
+    .btn-outline-primary:active {
+        color: #fff !important;
+        background-color: #5C0002 !important;
+        border-color: #5C0002 !important;
+    }
+
+
+
+

@@ -10,15 +10,18 @@ namespace ChhayaNirh.Models
         public int Id { get; set; }
 
         public int UserId { get; set; } // Foreign key to User
+
+        [Required(ErrorMessage = "Please select post type")]
         public string PostType { get; set; } // "Owner" or "Renter"
 
-        [Required]
+        [Required(ErrorMessage = "Please enter area")]
         public string Area { get; set; }
 
         public string HouseType { get; set; } // Flat, Apartment, etc.
         public int? Bedrooms { get; set; }
         public int? Bathrooms { get; set; }
 
+        [Required(ErrorMessage = "Please enter rent amount")]
         public decimal? RentAmount { get; set; } // For Owner
         public decimal? Budget { get; set; } // For Renter
 

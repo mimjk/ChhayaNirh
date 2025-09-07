@@ -10,9 +10,9 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-<div class="comment-page-container">
+<div class="comment-page-container" style="background-color: #FFFFF0;">
     <!-- Page Header -->
-    <div class="comment-page-header">
+    <div class="comment-page-header" style="background-color: #FFFFF0;">
         <button class="back-btn" onclick="goBack()">
             <i class="fas fa-arrow-left"></i>
         </button>
@@ -21,9 +21,9 @@
 
     <!-- Post Content -->
     <div class="post-content-page">
-        <div class="post-card">
+        <div class="post-card" style="background-color: #FFFFF0;">
             <div class="post-header">
-                <img src="@(string.IsNullOrEmpty(Model.User?.ProfilePicturePath) ? Url.Content("~/Content/images/default-profile.png") : Url.Content(Model.User.ProfilePicturePath))"
+                <img src="@(string.IsNullOrEmpty(Model.User?.ProfilePicturePath) ? Url.Content("~/Content/Images/default-profile2.png") : Url.Content(Model.User.ProfilePicturePath))"
                      alt="Profile" class="profile-pic" style="width: 50px; height: 50px;" />
                 <div class="post-user-info">
                     <h6>@Model.User.FullName</h6>
@@ -115,7 +115,7 @@
     </div>
 
     <!-- Comment Input -->
-    <div class="comment-input-section">
+    <div class="comment-input-section" style="background-color: #FFFFF0;">
         <div class="comment-input-area">
             <img src="@ViewBag.ProfilePicturePath" alt="Your Profile" class="profile-pic" style="width: 32px; height: 32px;" />
             <textarea class="comment-input" id="commentText" placeholder="Write a comment..." rows="1"></textarea>
@@ -299,4 +299,4 @@
         font-size: 14px;
         font-weight: 500
     }
-    </style >
+</style >

@@ -8,7 +8,7 @@
     <h2>Rental Listings</h2>
 
     <!-- Create Post Section -->
-    <div class="card p-3 mb-4 shadow-sm" style="background-color:#ffffff;">
+    <div class="card p-3 mb-4 shadow-sm" style="background-color: #FFFFF0;">
         <div class="d-flex align-items-center">
             <a href="@Url.Action("Profile", "Profile")">
                 <img src="@ViewBag.ProfilePicturePath"
@@ -36,7 +36,7 @@
 
     <!-- Collapsible Filter Panel -->
     <div class="collapse" id="filterPanel">
-        <form method="get" action="@Url.Action("Post", "Post")" class="card card-body">
+        <form method="get" action="@Url.Action("Post", "Post")" class="card card-body" style="background-color: #FFFFF0;">
             <div class="mb-3">
                 <label>Post Type:</label>
                 <select name="postType" class="form-select">
@@ -80,7 +80,10 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary">Apply Filters</button>
+            <div class="text-end">
+                <button type="submit" class="btn custom-filter-btn">Apply Filters</button>
+            </div>
+
         </form>
     </div>
 
@@ -89,10 +92,10 @@
         @foreach (var post in Model)
         {
             <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="post-card cursor-pointer" onclick="openPostDetails(@post.Id)" style="cursor: pointer; transition: transform 0.2s; min-height: 180px;">
+                <div class="post-card cursor-pointer" onclick="openPostDetails(@post.Id)" style="cursor: pointer; transition: transform 0.2s; min-height: 180px; background-color: #FFFFF0;">
                     <!-- Post Header -->
                     <div class="post-header">
-                        <img src="@(string.IsNullOrEmpty(post.User?.ProfilePicturePath) ? Url.Content("~/Content/images/default-profile.png") : Url.Content(post.User.ProfilePicturePath))"
+                        <img src="@(string.IsNullOrEmpty(post.User?.ProfilePicturePath) ? Url.Content("~/Content/Images/default-profile2.png") : Url.Content(post.User.ProfilePicturePath))"
                              alt="Profile"
                              class="profile-pic" />
                         <div class="post-user-info">
