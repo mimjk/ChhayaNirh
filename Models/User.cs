@@ -43,7 +43,10 @@ namespace ChhayaNirh.Models
         public string PresentAddress { get; set; } // New field
         public string PermanentAddress { get; set; } // Add this line
         public string NIDDocumentPath { get; set; }  // File path of uploaded NID
-        public bool IsVerified { get; set; } = false;  // Admin will mark true after approval
+        public bool IsVerified { get; set; } = false;  // Admin will mark true after approval(checking NID)
+        public bool IsEmailVerified { get; set; } = false;
+        public string EmailVerificationCode { get; set; }
+        public DateTime? EmailVerificationExpiry { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

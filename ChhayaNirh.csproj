@@ -191,6 +191,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\EmailHelper.cs" />
     <Compile Include="Helpers\PasswordHelper.cs" />
     <Compile Include="Helpers\JwtHelper.cs" />
     <Compile Include="Migrations\202508301902010_InitialCreate.cs" />
@@ -240,6 +241,10 @@
     <Compile Include="Migrations\202509072316050_MakeRentAmountOptional.cs" />
     <Compile Include="Migrations\202509072316050_MakeRentAmountOptional.Designer.cs">
       <DependentUpon>202509072316050_MakeRentAmountOptional.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202509080743478_AddEmailVerificationToUser.cs" />
+    <Compile Include="Migrations\202509080743478_AddEmailVerificationToUser.Designer.cs">
+      <DependentUpon>202509080743478_AddEmailVerificationToUser.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -326,6 +331,7 @@
     <Content Include="Views\Post\CommentModal.cshtml" />
     <Content Include="Views\Post\PostDetails.cshtml" />
     <Content Include="Views\Profile\VerifyProfile.cshtml" />
+    <Content Include="Views\Signup\VerifyEmail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -369,6 +375,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202509072316050_MakeRentAmountOptional.resx">
       <DependentUpon>202509072316050_MakeRentAmountOptional.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202509080743478_AddEmailVerificationToUser.resx">
+      <DependentUpon>202509080743478_AddEmailVerificationToUser.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -37,39 +37,33 @@ namespace ChhayaNirh.Controllers
                     return View();
                 }
 
-                // Date of Birth validation
                 if (!DateTime.TryParse(dateOfBirthString, out DateTime dateOfBirth))
                 {
                     TempData["Error"] = "Please enter a valid date of birth.";
                     return View();
                 }
 
-                // 18+ age validation
                 var today = DateTime.Today;
                 var age = today.Year - dateOfBirth.Year;
                 if (dateOfBirth.Date > today.AddYears(-age)) age--;
-
                 if (age < 18)
                 {
                     TempData["Error"] = "You must be at least 18 years old to register.";
                     return View();
                 }
 
-                // Phone validation
                 if (!Regex.IsMatch(phone, @"^01[0-9]{9}$"))
                 {
                     TempData["Error"] = "Phone number must be 11 digits and start with 01.";
                     return View();
                 }
 
-                // NID validation
                 if (!Regex.IsMatch(nidNumber, @"^[0-9]{17}$"))
                 {
                     TempData["Error"] = "NID must be exactly 17 digits and contain only numbers.";
                     return View();
                 }
 
-                // Password validation
                 if (password != confirmPassword)
                 {
                     TempData["Error"] = "Passwords do not match.";
@@ -84,7 +78,6 @@ namespace ChhayaNirh.Controllers
 
                 using (var db = new ApplicationDbContext())
                 {
-                    // Check if user already exists
                     if (db.Users.Any(u => u.Phone == phone))
                     {
                         TempData["Error"] = "A user with this phone number already exists.";
@@ -103,6 +96,9 @@ namespace ChhayaNirh.Controllers
                         return View();
                     }
 
+                    // Generate 6-digit verification code
+                    var code = new Random().Next(100000, 999999).ToString();
+
                     User newUser = new User
                     {
                         FullName = fullName,
@@ -112,20 +108,83 @@ namespace ChhayaNirh.Controllers
                         UserType = "User",
                         NIDNumber = nidNumber,
                         DateOfBirth = dateOfBirth,
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.Now,
+                        EmailVerificationCode = code,
+                        EmailVerificationExpiry = DateTime.Now.AddMinutes(5),
+                        IsEmailVerified = false
                     };
 
                     db.Users.Add(newUser);
                     db.SaveChanges();
-                }
 
-                TempData["Success"] = "Account created successfully! Please login.";
-                return RedirectToAction("Login", "Login");
+                    // Send email with verification code
+                    EmailHelper.SendEmail(newUser.Email, "Email Verification Code",
+                        $"Your verification code is: {code}. It will expire in 5 minutes.");
+
+                    // Redirect to verification page
+                    return RedirectToAction("VerifyEmail", new { id = newUser.Id });
+                }
             }
             catch (Exception)
             {
                 TempData["Error"] = "Registration failed. Please try again.";
                 return View();
+            }
+        }
+
+        // GET: Verify Email Page
+        public ActionResult VerifyEmail(int id)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var user = db.Users.Find(id);
+                if (user == null) return HttpNotFound();
+
+                return View(user);
+            }
+        }
+
+        // POST: Verify Email
+        [HttpPost]
+        public ActionResult VerifyEmail(int id, string code)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var user = db.Users.Find(id);
+                if (user == null) return HttpNotFound();
+
+                if (user.EmailVerificationCode == code && user.EmailVerificationExpiry > DateTime.Now)
+                {
+                    user.IsEmailVerified = true;
+                    db.SaveChanges();
+                    TempData["Success"] = "Email verified successfully! You can now log in.";
+                    return RedirectToAction("Login", "Login");
+                }
+
+                TempData["Error"] = "Invalid or expired verification code.";
+                return RedirectToAction("VerifyEmail", new { id = id });
+            }
+        }
+
+        // POST: Resend Code
+        [HttpPost]
+        public ActionResult ResendVerificationCode(int id)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var user = db.Users.Find(id);
+                if (user == null) return HttpNotFound();
+
+                var code = new Random().Next(100000, 999999).ToString();
+                user.EmailVerificationCode = code;
+                user.EmailVerificationExpiry = DateTime.Now.AddMinutes(5);
+                db.SaveChanges();
+
+                EmailHelper.SendEmail(user.Email, "New Verification Code",
+                    $"Your new verification code is: {code}. It will expire in 5 minutes.");
+
+                TempData["Success"] = "A new verification code has been sent to your email.";
+                return RedirectToAction("VerifyEmail", new { id = id });
             }
         }
     }

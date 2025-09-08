@@ -1,0 +1,46 @@
+﻿@model ChhayaNirh.Models.User
+@{
+    ViewBag.Title = "Verify Email";
+}
+
+<main class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-4" style="background-color: #FFFFF0;">
+                <h3 class="text-center mb-3">Verify Your Email</h3>
+                <p class="text-muted text-center">
+                    A 6-digit code has been sent to <strong>@Model.Email</strong>.
+                    Enter it below to verify your account.
+                </p>
+
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger">@TempData["Error"]</div>
+                }
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success">@TempData["Success"]</div>
+                }
+
+                @using (Html.BeginForm("VerifyEmail", "Signup", FormMethod.Post))
+                {
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="mb-3">
+                        <label class="form-label">Verification Code</label>
+                        <input type="text" name="code" class="form-control" placeholder="Enter 6-digit code" required />
+                    </div>
+                    <button type="submit"
+                            class="btn"
+                            style="background-color: #5C0002; color: #ffffff; border: none; width: 200px; display: block; margin: 0 auto;">
+                        Verify
+                    </button>
+                }
+
+                <form action="@Url.Action("ResendVerificationCode", "Signup")" method="post" class="mt-3 text-center">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <button type="submit" class="btn btn-link">Resend Code</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
