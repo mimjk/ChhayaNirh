@@ -3,25 +3,43 @@
 }
 
 <main class="container my-5">
-    <h2 style="color:#000000;">Contact Us</h2>
-    <p style="color:#000000;" class="lead">
-        Have questions or need assistance with posting, searching, or making payments?
-        Our support team is here to help you.
-    </p>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm p-4" style="background-color: #FFFFF0; border-radius: 12px;">
 
-    <address style="color:#000000;">
-        <strong>Email Support:</strong> <a href="mailto:support@chhayanirh.com" style="color:#007BFF;">support@chhayanirh.com</a><br />
-        <strong>Phone:</strong> +880 1234 567890<br />
-        <strong>Office:</strong> Dhaka, Bangladesh
-    </address>
+                <h2 class="text-center mb-3" style="color:#000000;">📞 Contact Us</h2>
+                <p class="lead text-center mb-4" style="color:#000000;">
+                    Have questions or need assistance with posting, searching, or making payments?
+                    Our support team is here to help you.
+                </p>
 
-    <p style="color:#000000;">
-        You can also reach out to us via the
-        <a href="javascript:void(0);" style="color:#007BFF;" onclick="openChat()">
-            Chat
-        </a>
-        feature on the website.
-    </p>
+                <div class="mb-4 p-3" style="background-color: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <p>
+                        <strong>Email Support:</strong>
+                        <a href="mailto:support@chhayanirh.com" style="color:#007BFF; text-decoration: none;">
+                            support@chhayanirh.com
+                        </a>
+                    </p>
+                    <p><strong>Phone:</strong> +880 1234 567890</p>
+                    <p><strong>Office:</strong> Dhaka, Bangladesh</p>
+                </div>
+
+                <p class="text-center" style="color:#000000;">
+                    You can also reach out to us via the
+                    <a href="javascript:void(0);" style="color:#007BFF; font-weight: 500;" onclick="openChat()">
+                        Chat
+                    </a>
+                    feature on the website.
+                </p>
+
+                <div class="text-center mt-4">
+                    <a href="@Url.Action("About", "Home")" class="btn" style="background-color: #5C0002; color: #fff; border-radius:8px; padding:8px 20px; font-weight:500;">
+                        📄 About Us
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         function openChat() {
