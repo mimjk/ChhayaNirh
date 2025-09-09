@@ -1,0 +1,244 @@
+﻿@model ChhayaNirh.Models.Post
+@{
+    ViewBag.Title = "Verify Post";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/CreatePost.css" rel="stylesheet" />
+
+<div class="container mt-5">
+    <!-- Back Button -->
+    <div class="d-flex align-items-center mb-4">
+        <button class="btn btn-outline-secondary me-3" onclick="goBack()">
+            <i class="fas fa-arrow-left"></i> Back to Post
+        </button>
+        <h2 class="mb-0">Verify Your Post</h2>
+    </div>
+
+    <!-- Success/Error Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <!-- Left Column: Post Summary -->
+        <div class="col-md-5">
+            <div class="card shadow-sm" style="background-color: #FFFFF0;">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-home"></i> Post Summary
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="@(string.IsNullOrEmpty(Model.User?.ProfilePicturePath) ? Url.Content("~/Content/Images/default-profile2.png") : Url.Content(Model.User.ProfilePicturePath))"
+                             alt="Profile" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;" />
+                        <div>
+                            <h6 class="mb-1">@Model.User.FullName</h6>
+                            <small class="text-muted">@Model.CreatedAt.ToString("MMM dd, yyyy")</small>
+                        </div>
+                        <span class="badge @(Model.PostType == "Owner" ? "bg-success" : "bg-primary") ms-auto">
+                            @Model.PostType
+                        </span>
+                    </div>
+
+                    <h6 class="text-primary mb-2">@Model.HouseType in @Model.Area</h6>
+
+                    @if (Model.PostType == "Owner")
+                    {
+                        <div class="row mb-2">
+                            <div class="col-6"><small><strong>Bedrooms:</strong> @Model.Bedrooms</small></div>
+                            <div class="col-6"><small><strong>Bathrooms:</strong> @Model.Bathrooms</small></div>
+                        </div>
+                        <p><small><strong>Rent:</strong> <span class="text-success fw-bold">৳@Model.RentAmount per month</span></small></p>
+                    }
+                    else
+                    {
+                        <p><small><strong>Budget:</strong> <span class="text-primary fw-bold">৳@Model.Budget</span></small></p>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.Amenities))
+                    {
+                        <p><small><strong>Amenities:</strong> @Model.Amenities</small></p>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <p class="text-muted"><small>@Model.Description</small></p>
+                    }
+                </div>
+            </div>
+
+            <!-- Current Electricity Bill Status -->
+            @if (!string.IsNullOrEmpty(Model.ElectricityBillPath))
+            {
+                <div class="card shadow-sm mt-4" style="background-color: #e8f5e8;">
+                    <div class="card-header bg-success text-white">
+                        <h6 class="mb-0">
+                            <i class="fas fa-check-circle"></i> Current Electricity Bill
+                        </h6>
+                    </div>
+                    <div class="card-body text-center">
+                        <img src="@Url.Content(Model.ElectricityBillPath)" alt="Current Electricity Bill"
+                             class="img-fluid rounded border" style="max-height: 300px; cursor: pointer;"
+                             onclick="viewFullImage('@Url.Content(Model.ElectricityBillPath)')" />
+                        <p class="mt-2 mb-0"><small class="text-success">Electricity bill is already uploaded</small></p>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Right Column: Upload Form -->
+        <div class="col-md-7">
+            <div class="card shadow-sm">
+                <div class="card-header" style="background-color: #f8f9fa;">
+                    <h5 class="mb-0">
+                        <i class="fas fa-file-upload"></i>
+                        @(string.IsNullOrEmpty(Model.ElectricityBillPath) ? "Upload Electricity Bill" : "Update Electricity Bill")
+                    </h5>
+                </div>
+                <div class="card-body" style="background-color: #FFFFF0;">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Why verify your post?</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>Increases trust with potential renters/landlords</li>
+                            <li>Shows proof of legitimate property ownership/rental interest</li>
+                            <li>Helps prevent fraud and fake listings</li>
+                            <li>Only you and admins can see this document</li>
+                        </ul>
+                    </div>
+
+                    <form method="post" enctype="multipart/form-data" id="verifyForm">
+                        <input type="hidden" name="PostId" value="@Model.Id" />
+
+                        <div class="mb-4">
+                            <label for="ElectricityBill" class="form-label">
+                                <i class="fas fa-bolt"></i> Select Electricity Bill Image
+                            </label>
+                            <input type="file" name="ElectricityBill" id="ElectricityBill"
+                                   class="form-control form-control-lg" accept="image/*" required
+                                   onchange="previewImage(this)" />
+                            <div class="form-text">
+                                <i class="fas fa-lightbulb"></i>
+                                Please upload a clear, recent electricity bill image (JPG, PNG, GIF, BMP - Max 5MB)
+                            </div>
+                        </div>
+
+                        <!-- Image Preview -->
+                        <div id="imagePreview" class="mb-4" style="display: none;">
+                            <label class="form-label">Preview:</label>
+                            <div class="border rounded p-3 text-center" style="background-color: #f8f9fa;">
+                                <img id="previewImg" src="" alt="Preview" class="img-fluid rounded" style="max-height: 300px;" />
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg" id="submitBtn">
+                                <i class="fas fa-check-circle"></i>
+                                @(string.IsNullOrEmpty(Model.ElectricityBillPath) ? "Upload & Verify Post" : "Update Electricity Bill")
+                            </button>
+                            <a href="@Url.Action("PostDetails", new { id = Model.Id })" class="btn btn-outline-secondary">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Full Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Electricity Bill</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="fullImage" src="" alt="Full Image" class="img-fluid" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function goBack() {
+        window.location.href = '@Url.Action("PostDetails", new { id = Model.Id })';
+    }
+
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                $('#previewImg').attr('src', e.target.result);
+                $('#imagePreview').show();
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function viewFullImage(imagePath) {
+        $('#fullImage').attr('src', imagePath);
+        var imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+        imageModal.show();
+    }
+
+    // Form submission with loading state
+    $('#verifyForm').on('submit', function() {
+        $('#submitBtn').prop('disabled', true)
+                      .html('<i class="fas fa-spinner fa-spin"></i> Uploading...');
+    });
+
+    // File size validation
+    $('#ElectricityBill').on('change', function() {
+        var file = this.files[0];
+        if (file && file.size > 5 * 1024 * 1024) { // 5MB limit
+            alert('File size should not exceed 5MB');
+            this.value = '';
+            $('#imagePreview').hide();
+        }
+    });
+</script>
+
+<style>
+    .card {
+        transition: all 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+        }
+
+    #previewImg, img[onclick] {
+        cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+
+        #previewImg:hover, img[onclick]:hover {
+            transform: scale(1.05);
+        }
+
+    .btn-lg {
+        padding: 12px 20px;
+        font-size: 1.1rem;
+    }
+</style>

@@ -36,6 +36,8 @@ namespace ChhayaNirh.Models
         public virtual ICollection<Like> Likes { get; set; }
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
+        public string ElectricityBillPath { get; set; }
+
 
     }
 }

@@ -246,11 +246,20 @@
     <Compile Include="Migrations\202509080743478_AddEmailVerificationToUser.Designer.cs">
       <DependentUpon>202509080743478_AddEmailVerificationToUser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202509081937405_AddReportsTable.cs" />
+    <Compile Include="Migrations\202509081937405_AddReportsTable.Designer.cs">
+      <DependentUpon>202509081937405_AddReportsTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202509082012359_AddElectricityBillToPost.cs" />
+    <Compile Include="Migrations\202509082012359_AddElectricityBillToPost.Designer.cs">
+      <DependentUpon>202509082012359_AddElectricityBillToPost.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\Like.cs" />
     <Compile Include="Models\Post.cs" />
+    <Compile Include="Models\Report.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -332,6 +341,7 @@
     <Content Include="Views\Post\PostDetails.cshtml" />
     <Content Include="Views\Profile\VerifyProfile.cshtml" />
     <Content Include="Views\Signup\VerifyEmail.cshtml" />
+    <Content Include="Views\Post\VerifyPost.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -378,6 +388,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202509080743478_AddEmailVerificationToUser.resx">
       <DependentUpon>202509080743478_AddEmailVerificationToUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202509081937405_AddReportsTable.resx">
+      <DependentUpon>202509081937405_AddReportsTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202509082012359_AddElectricityBillToPost.resx">
+      <DependentUpon>202509082012359_AddElectricityBillToPost.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
