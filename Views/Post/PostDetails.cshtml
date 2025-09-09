@@ -18,9 +18,19 @@
             </button>
             <h3 class="page-title" style="margin: 0;">@Model.User.FullName's post</h3>
         </div>
-        <button class="delete-btn" onclick="deletePost(@Model.Id)">
-            <i class="fas fa-trash-alt"></i> Delete Post
-        </button>
+        @if (ViewBag.CurrentUserId == Model.UserId)
+        {
+            <button class="delete-btn" onclick="deletePost(@Model.Id)">
+                <i class="fas fa-trash-alt"></i> Delete Post
+            </button>
+        }
+        else
+        {
+            <button class="report-btn" data-bs-toggle="modal" data-bs-target="#reportModal">
+                <i class="fas fa-flag"></i> Report Post
+            </button>
+        }
+
     </div>
 
     <!-- Post Content -->
@@ -60,11 +70,21 @@
                             <div class="col-12 mt-1"><small><strong>Rent:</strong> <span class="text-success fw-bold">৳@Model.RentAmount</span></small></div>
                         </div>
                     }
-                    else if (Model.PostType == "Renter")
+                    @if (Model.PostType == "Renter")
                     {
                         <div class="row">
-                            <div class="col-12"><small><strong>Budget:</strong> <span class="text-primary fw-bold">৳@Model.Budget</span></small></div>
-                            <div class="col-12 mt-1"><small><strong>Preferred Type:</strong> @Model.HouseType</small></div>
+                            <div class="col-12">
+                                <small><strong>Budget:</strong> <span class="text-primary fw-bold">৳@Model.Budget</span></small>
+                            </div>
+                            <div class="col-12 mt-1">
+                                <small><strong>Preferred House Type:</strong> @Model.HouseType</small>
+                            </div>
+                            @if (!string.IsNullOrEmpty(Model.Amenities))
+                            {
+                                <div class="col-12 mt-1">
+                                    <small><strong>Required Amenities:</strong> @Model.Amenities</small>
+                                </div>
+                            }
                         </div>
                     }
 
@@ -97,12 +117,54 @@
 
             <!-- Post Actions -->
             <div class="post-actions" style="padding: 15px; border-top: 1px solid #e4e6ea; display: flex; justify-content: space-around;">
-                <button class="action-btn like-btn @(ViewBag.IsLiked ? "liked" : "")" data-post-id="@Model.Id">
-                    <i class="fas fa-heart"></i> <span class="like-count">@Model.LikeCount</span> Likes
-                </button>
-                <button class="action-btn comment-btn" data-post-id="@Model.Id"><i class="fas fa-comment"></i> Comment</button>
-                <button class="action-btn contact-btn" onclick="contactUser()"><i class="fas fa-envelope"></i> Contact</button>
+                @if (ViewBag.CanLike)
+                {
+                    <button class="action-btn like-btn @(ViewBag.IsLiked ? "liked" : "")" data-post-id="@Model.Id" onclick="toggleLike(@Model.Id, this)">
+                        <i class="fas fa-heart"></i> <span class="like-count">@Model.LikeCount</span> Likes
+                    </button>
+                }
+                else
+                {
+                    <!-- Show like count but disable interaction for own posts -->
+                    <button class="action-btn like-btn disabled" disabled title="You cannot like your own post">
+                        <i class="fas fa-heart"></i> <span class="like-count">@Model.LikeCount</span> Likes
+                    </button>
+                }
+                <button class="action-btn comment-btn" data-post-id="@Model.Id" onclick="focusCommentInput()"><i class="fas fa-comment"></i> Comment</button>
+                <!-- Replace the existing verify button section in PostDetails.cshtml -->
+                @if (ViewBag.CurrentUserId == Model.UserId)
+                {
+                    <button class="action-btn contact-btn" onclick="window.location.href='@Url.Action("VerifyPost", "Post", new { id = Model.Id })'">
+                        <i class="fas fa-check-circle"></i> Verify Post
+                    </button>
+                }
+                else
+                {
+                    <button class="action-btn contact-btn" onclick="contactUser()">
+                        <i class="fas fa-envelope"></i> Contact
+                    </button>
+                }
             </div>
+            <!-- Electricity Bill Display Section - Only visible to post owner and admins -->
+            @if ((ViewBag.CurrentUserId == Model.UserId || ViewBag.IsAdmin) && !string.IsNullOrEmpty(Model.ElectricityBillPath))
+            {
+                <div class="mt-3 p-3 border rounded" style="background-color: #f8f9fa;">
+                    <h6 class="text-success mb-3">
+                        <i class="fas fa-shield-alt"></i> Verification Document
+                        <small class="text-muted">(Visible only to you and admins)</small>
+                    </h6>
+                    <div class="text-center">
+                        <img src="@Url.Content(Model.ElectricityBillPath)"
+                             alt="Electricity Bill"
+                             class="img-fluid rounded border"
+                             style="max-width: 100%; max-height: 400px; cursor: pointer;"
+                             onclick="viewBillFullScreen('@Url.Content(Model.ElectricityBillPath)')" />
+                    </div>
+                    <p class="text-center mt-2 mb-0">
+                        <small class="text-muted">Click to view full size</small>
+                    </p>
+                </div>
+            }
         </div>
     </div>
 
@@ -144,24 +206,92 @@
         </div>
     </div>
 
+    <!-- Report Modal -->
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reportModalLabel">Report Post</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="reportForm">
+                        <div class="mb-3">
+                            <label class="form-label">Why are you reporting this post?</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="reportType" id="report1" value="Problem involving someone under 18">
+                                <label class="form-check-label" for="report1">
+                                    Problem involving someone under 18
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="reportType" id="report2" value="Bullying, harassment or abuse">
+                                <label class="form-check-label" for="report2">
+                                    Bullying, harassment or abuse
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="reportType" id="report3" value="Fraud Post">
+                                <label class="form-check-label" for="report3">
+                                    Fraud Post
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="reportType" id="report4" value="Others">
+                                <label class="form-check-label" for="report4">
+                                    Others
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="reportDescription" class="form-label">Additional details (optional)</label>
+                            <textarea class="form-control" id="reportDescription" rows="3" placeholder="Please provide more details about why you're reporting this post..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="submitReportBtn" disabled>Submit Report</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Success Modal -->
     <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body text-center">
-                    Post deleted successfully!
+                    <!-- Dynamic content will be inserted here -->
                 </div>
             </div>
         </div>
     </div>
 </div>
+<!-- Bill Modal for full screen viewing -->
+<div class="modal fade" id="billModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Electricity Bill - Verification Document</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center p-1">
+                <img id="fullBillImage" src="" alt="Full Bill Image" class="img-fluid" style="max-height: 80vh;" />
+            </div>
+        </div>
+    </div>
+</div>
+</div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
     $(document).ready(function () {
-        // Comments
+        // Comments functionality
         loadComments();
 
         $('#commentText').on('input', function () {
@@ -175,6 +305,7 @@
             $.post('@Url.Action("AddComment", "Post")', { postId: @Model.Id, commentText: commentText }, function (res) {
                 if (res.success) {
                     $('#commentText').val('');
+                    $('#sendComment').prop('disabled', true);
                     loadComments();
                 } else {
                     alert(res.error);
@@ -190,7 +321,7 @@
             });
         }
 
-        // Leaflet Map
+        // Leaflet Map functionality
         var mapInitialized = false;
         var postLat = @Model.Latitude;
         var postLng = @Model.Longitude;
@@ -210,7 +341,107 @@
                 mapInitialized = true;
             }
         });
+
+        // Report functionality
+        $('input[name="reportType"]').change(function() {
+            $('#submitReportBtn').prop('disabled', false);
+        });
+
+        $('#submitReportBtn').click(function() {
+            var reportType = $('input[name="reportType"]:checked').val();
+            var description = $('#reportDescription').val().trim();
+
+            if (!reportType) {
+                alert('Please select a reason for reporting.');
+                return;
+            }
+
+            // Disable submit button and show loading
+            $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Submitting...');
+
+            $.ajax({
+                url: '@Url.Action("SubmitReport", "Post")',
+                type: 'POST',
+                data: {
+                    postId: @Model.Id,
+                    reportType: reportType,
+                    description: description
+                },
+                success: function(res) {
+                    if (res.success) {
+                        $('#reportModal').modal('hide');
+
+                        // Update the success modal content for report
+                        $('.modal-body', '#successModal').html('Your report has been submitted successfully and we will get back to you soon!');
+                        var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                        successModal.show();
+
+                        setTimeout(function() {
+                            successModal.hide();
+                        }, 4000); // Show for 4 seconds since message is longer
+                    } else {
+                        alert('Error: ' + res.error);
+                    }
+                },
+                error: function() {
+                    alert('Error submitting report. Please try again.');
+                },
+                complete: function() {
+                    $('#submitReportBtn').prop('disabled', false).html('Submit Report');
+                }
+            });
+        });
+
+        // Reset report form when modal is hidden
+        $('#reportModal').on('hidden.bs.modal', function() {
+            $('#reportForm')[0].reset();
+            $('#submitReportBtn').prop('disabled', true);
+        });
     });
+
+    // Like functionality
+    function toggleLike(postId, button) {
+        // Prevent double clicking
+        $(button).prop('disabled', true);
+
+        $.ajax({
+            url: '@Url.Action("ToggleLike", "Post")',
+            type: 'POST',
+            data: { postId: postId },
+            success: function (response) {
+                if (response.success) {
+                    // Update like count
+                    $(button).find('.like-count').text(response.likeCount);
+
+                    // Toggle liked class and heart color
+                    if (response.isLiked) {
+                        $(button).addClass('liked');
+                        $(button).find('i').css('color', '#e74c3c');
+                        // Add heart animation
+                        $(button).find('i').addClass('heartBeat');
+                        setTimeout(() => $(button).find('i').removeClass('heartBeat'), 500);
+                    } else {
+                        $(button).removeClass('liked');
+                        $(button).find('i').css('color', '');
+                    }
+                } else {
+                    alert('Error: ' + response.error);
+                }
+            },
+            error: function (xhr, status, error) {
+                alert('Error liking post. Please try again.');
+                console.error('Like error:', error);
+            },
+            complete: function() {
+                // Re-enable the button
+                $(button).prop('disabled', false);
+            }
+        });
+    }
+
+    function focusCommentInput() {
+        $('#commentText').focus();
+    }
 
     function goBack() {
         if (document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
@@ -225,36 +456,45 @@
     }
 
     function deletePost(postId) {
-    // Show confirmation modal
-    var deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
-    deleteModal.show();
+        // Show confirmation modal
+        var deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+        deleteModal.show();
 
-    // When user clicks confirm
-    $('#confirmDeleteBtn').off('click').on('click', function () {
-        $.ajax({
-            url: '@Url.Action("DeletePost", "Post")',
-            type: 'POST',
-            data: { id: postId },
-            success: function (res) {
-                deleteModal.hide(); // hide confirmation modal
-                if (res.success) {
-                    // Show success modal
-                    var successModal = new bootstrap.Modal(document.getElementById('successModal'));
-                    successModal.show();
-                    setTimeout(function () {
-                        window.location.href = '@Url.Action("Post", "Post")';
-                    }, 1500); // redirect after 1.5 seconds
-                } else {
-                    alert(res.error); // fallback if error
+        // When user clicks confirm
+        $('#confirmDeleteBtn').off('click').on('click', function () {
+            $.ajax({
+                url: '@Url.Action("DeletePost", "Post")',
+                type: 'POST',
+                data: { id: postId },
+                success: function (res) {
+                    deleteModal.hide(); // hide confirmation modal
+                    if (res.success) {
+                        // Update the success modal content for delete
+                        $('.modal-body', '#successModal').html('Post deleted successfully!');
+                        var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                        successModal.show();
+
+                        setTimeout(function () {
+                            window.location.href = '@Url.Action("Post", "Post")';
+                        }, 1500); // redirect after 1.5 seconds
+                    } else {
+                        alert(res.error); // fallback if error
+                    }
+                },
+                error: function () {
+                    deleteModal.hide();
+                    alert('Error deleting post.');
                 }
-            },
-            error: function () {
-                deleteModal.hide();
-                alert('Error deleting post.');
-            }
+            });
         });
-    });
-}
+    }
+
+    // Function to view electricity bill in full screen
+    function viewBillFullScreen(imagePath) {
+        $('#fullBillImage').attr('src', imagePath);
+        var billModal = new bootstrap.Modal(document.getElementById('billModal'));
+        billModal.show();
+    }
 </script>
 
 <style>
@@ -276,7 +516,21 @@
     }
 
     .like-btn.liked {
-        color: red;
+        color: #e74c3c !important;
+    }
+
+        .like-btn.liked i {
+            color: #e74c3c !important;
+        }
+
+    .like-btn.disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    /* Heart beat animation */
+    .heartBeat {
+        animation: heartBeat 0.5s ease-in-out;
     }
 
     .comment-input {
@@ -305,24 +559,50 @@
             cursor: not-allowed;
         }
 
-    /* Small Delete Button */
-    /* Small Delete Button with text */
+    /* Delete Button */
     .delete-btn {
         background-color: #dc3545;
         color: white;
         border: none;
         border-radius: 4px;
-        padding: 3px 8px; /* slightly wider to fit text */
+        padding: 3px 8px;
         cursor: pointer;
         font-size: 12px;
         display: flex;
         align-items: center;
-        gap: 4px; /* space between icon and text */
+        gap: 4px;
         transition: all 0.3s ease;
     }
 
         .delete-btn:hover {
             background-color: #c82333;
         }
+    /* Report Button */
+    .report-btn {
+        background-color: #ffc107;
+        color: #212529;
+        border: none;
+        border-radius: 4px;
+        padding: 3px 8px;
+        cursor: pointer;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.3s ease;
+    }
 
+        .report-btn:hover {
+            background-color: #e0a800;
+        }
+
+    /* Report modal styling */
+    .form-check {
+        margin-bottom: 10px;
+    }
+
+    .form-check-label {
+        margin-left: 5px;
+        cursor: pointer;
+    }
 </style>

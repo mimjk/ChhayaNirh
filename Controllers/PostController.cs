@@ -71,6 +71,7 @@ namespace ChhayaNirh.Controllers
                 post.MediaPaths = string.Join(",", paths);
             }
 
+
             db.Posts.Add(post);
             db.SaveChanges();
 
@@ -137,7 +138,7 @@ namespace ChhayaNirh.Controllers
             return View(filteredPosts);
         }
 
-        // NEW: Post Details Action
+        // : Post Details Action
         public ActionResult PostDetails(int? id) // make id nullable
         {
             if (id == null)
@@ -162,6 +163,18 @@ namespace ChhayaNirh.Controllers
             // Check if current user liked this post
             var isLiked = db.Likes.Any(l => l.PostId == id.Value && l.UserId == userId);
             ViewBag.IsLiked = isLiked;
+
+            // Pass current user ID to check if they can like the post (can't like own post)
+            ViewBag.CurrentUserId = userId;
+            ViewBag.CanLike = post.UserId != userId; // User cannot like their own post
+
+            // Add IsAdmin check - you'll need to implement this based on your User model
+            // For now, setting it to false. Replace this with your actual admin check logic
+            ViewBag.IsAdmin = false; // TODO: Implement actual admin check logic
+
+            // Alternative admin check examples (uncomment and modify based on your implementation):
+            // ViewBag.IsAdmin = user.UserType == "Admin"; 
+            // ViewBag.IsAdmin = user.IsAdmin; // if you have an IsAdmin property
 
             ViewBag.PostId = id.Value;
             return View(post);
@@ -207,6 +220,105 @@ namespace ChhayaNirh.Controllers
                 return Json(new { success = false, error = ex.Message });
             }
         }
+        // Add this GET method to your PostController.cs
+
+        [HttpGet]
+        public ActionResult VerifyPost(int? id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction("Post");
+            }
+
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            int userId = Convert.ToInt32(Session["UserId"]);
+            var post = db.Posts.Include("User").FirstOrDefault(p => p.Id == id.Value);
+
+            if (post == null)
+            {
+                return HttpNotFound();
+            }
+
+            // Check if the current user is the owner of the post
+            if (post.UserId != userId)
+            {
+                TempData["ErrorMessage"] = "You are not authorized to verify this post.";
+                return RedirectToAction("PostDetails", new { id = id.Value });
+            }
+
+            return View(post);
+        }
+
+        // Update your existing POST method to redirect back to PostDetails
+        [HttpPost]
+        public ActionResult VerifyPost(int PostId, HttpPostedFileBase ElectricityBill)
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            int userId = Convert.ToInt32(Session["UserId"]);
+            var post = db.Posts.Find(PostId);
+
+            if (post == null || post.UserId != userId)
+            {
+                TempData["ErrorMessage"] = "You are not authorized to verify this post.";
+                return RedirectToAction("PostDetails", new { id = PostId });
+            }
+
+            if (ElectricityBill != null && ElectricityBill.ContentLength > 0)
+            {
+                // Check if uploaded file is an image
+                string[] allowedExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
+                string fileExtension = Path.GetExtension(ElectricityBill.FileName).ToLower();
+
+                if (!allowedExtensions.Contains(fileExtension))
+                {
+                    TempData["ErrorMessage"] = "Please upload a valid image file (jpg, jpeg, png, gif, bmp).";
+                    return View(post);
+                }
+
+                try
+                {
+                    // Create unique filename to prevent conflicts
+                    string fileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(ElectricityBill.FileName);
+                    string uploadPath = Server.MapPath("~/Uploads");
+
+                    // Create directory if it doesn't exist
+                    if (!Directory.Exists(uploadPath))
+                    {
+                        Directory.CreateDirectory(uploadPath);
+                    }
+
+                    string filePath = Path.Combine(uploadPath, fileName);
+                    ElectricityBill.SaveAs(filePath);
+
+                    // Save relative path to database
+                    post.ElectricityBillPath = "/Uploads/" + fileName;
+                    db.SaveChanges();
+
+                    TempData["SuccessMessage"] = "Electricity bill uploaded successfully!";
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "Error uploading file: " + ex.Message;
+                    return View(post);
+                }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Please select an image file to upload.";
+                return View(post);
+            }
+
+            return RedirectToAction("PostDetails", new { id = PostId });
+        }
+
 
         // AJAX method to toggle likes (like/unlike)
         [HttpPost]
@@ -220,6 +332,19 @@ namespace ChhayaNirh.Controllers
                 }
 
                 int userId = Convert.ToInt32(Session["UserId"]);
+
+                // Check if the post exists
+                var post = db.Posts.Find(postId);
+                if (post == null)
+                {
+                    return Json(new { success = false, error = "Post not found" });
+                }
+
+                // Prevent users from liking their own posts
+                if (post.UserId == userId)
+                {
+                    return Json(new { success = false, error = "You cannot like your own post" });
+                }
 
                 // Check if user already liked this post
                 var existingLike = db.Likes
@@ -251,13 +376,9 @@ namespace ChhayaNirh.Controllers
                 // Get updated like count
                 var likeCount = db.Likes.Count(l => l.PostId == postId);
 
-                // Update post like count
-                var post = db.Posts.Find(postId);
-                if (post != null)
-                {
-                    post.LikeCount = likeCount;
-                    db.SaveChanges();
-                }
+                // Update post like count in the database
+                post.LikeCount = likeCount;
+                db.SaveChanges();
 
                 return Json(new
                 {
@@ -348,7 +469,62 @@ namespace ChhayaNirh.Controllers
                 return Json(new { success = false, error = ex.Message });
             }
         }
+         // ✅ NEW METHOD: Submit Report
+        [HttpPost]
+        public JsonResult SubmitReport(int postId, string reportType, string description)
+        {
+            try
+            {
+                if (Session["UserId"] == null)
+                {
+                    return Json(new { success = false, error = "User not logged in" });
+                }
 
+                int userId = Convert.ToInt32(Session["UserId"]);
+
+                // Check if the post exists
+                var post = db.Posts.Find(postId);
+                if (post == null)
+                {
+                    return Json(new { success = false, error = "Post not found" });
+                }
+
+                // Prevent users from reporting their own posts
+                if (post.UserId == userId)
+                {
+                    return Json(new { success = false, error = "You cannot report your own post" });
+                }
+
+                // Check if user already reported this post
+                var existingReport = db.Reports
+                    .FirstOrDefault(r => r.PostId == postId && r.ReportedByUserId == userId);
+
+                if (existingReport != null)
+                {
+                    return Json(new { success = false, error = "You have already reported this post" });
+                }
+
+                // Create new report
+                var report = new Report
+                {
+                    PostId = postId,
+                    ReportedByUserId = userId,
+                    ReportType = reportType,
+                    Description = description?.Trim(),
+                    ReportedAt = DateTime.Now,
+                    IsResolved = false
+                };
+
+                db.Reports.Add(report);
+                db.SaveChanges();
+
+                return Json(new { success = true, message = "Report submitted successfully" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
         // Action for comment modal
         public ActionResult CommentModal(int postId)
         {
@@ -368,6 +544,5 @@ namespace ChhayaNirh.Controllers
             ViewBag.PostId = postId;
             return View(post);
         }
-
     }
 }
