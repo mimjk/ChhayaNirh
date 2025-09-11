@@ -15,7 +15,8 @@
                      alt=""
                      class="rounded-circle"
                      width="50" height="50"
-                     style="object-fit: cover;" />
+                     style="object-fit: cover; border: 2px solid #5C0002;"
+                 onerror="this.src='@Url.Content("~/Content/Images/default-profile2.png")'" />
             </a>
             <a href="@Url.Action("CreatePost", "Post")" class="flex-grow-1 ms-3 text-decoration-none">
                 <div class="form-control bg-light" style="cursor: pointer;">

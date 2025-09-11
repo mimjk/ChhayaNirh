@@ -120,14 +120,14 @@
                 @if (ViewBag.CanLike)
                 {
                     <button class="action-btn like-btn @(ViewBag.IsLiked ? "liked" : "")" data-post-id="@Model.Id" onclick="toggleLike(@Model.Id, this)">
-                        <i class="fas fa-heart"></i> <span class="like-count">@Model.LikeCount</span> Likes
+                        <i class="fas fa-heart"></i> <span class="like-count">@Model.LikeCount</span> Support
                     </button>
                 }
                 else
                 {
                     <!-- Show like count but disable interaction for own posts -->
                     <button class="action-btn like-btn disabled" disabled title="You cannot like your own post">
-                        <i class="fas fa-heart"></i> <span class="like-count">@Model.LikeCount</span> Likes
+                        <i class="fas fa-heart"></i> <span class="like-count">@Model.LikeCount</span> Supports
                     </button>
                 }
                 <button class="action-btn comment-btn" data-post-id="@Model.Id" onclick="focusCommentInput()"><i class="fas fa-comment"></i> Comment</button>
@@ -140,9 +140,9 @@
                 }
                 else
                 {
-                    <button class="action-btn contact-btn" onclick="contactUser()">
-                        <i class="fas fa-envelope"></i> Contact
-                    </button>
+            <button class="action-btn contact-btn" onclick="window.location.href='@Url.Action("Inbox", "Chat", new { userId = Model.UserId })'">
+                <i class="fas fa-envelope"></i> Contact
+            </button>
                 }
             </div>
             <!-- Electricity Bill Display Section - Only visible to post owner and admins -->
@@ -282,7 +282,7 @@
         </div>
     </div>
 </div>
-</div>
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

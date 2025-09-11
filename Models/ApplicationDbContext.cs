@@ -1,6 +1,7 @@
 ﻿using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Web.Services.Description;
+using ChhayaNirh.Models;
 
 namespace ChhayaNirh.Models
 {
@@ -17,6 +18,8 @@ namespace ChhayaNirh.Models
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Like> Likes { get; set; }
         public DbSet<Report> Reports { get; set; }
+        public DbSet<Chat> Chats { get; set; }
+
         //public DbSet<Product> Products { get; set; }
 
         // Example:

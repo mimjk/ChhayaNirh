@@ -95,9 +95,10 @@ namespace ChhayaNirh.Controllers
             int userId = Convert.ToInt32(Session["UserId"]);
             var user = db.Users.Find(userId);
 
+            // Set the profile picture path - use actual profile picture or default
             ViewBag.ProfilePicturePath = string.IsNullOrEmpty(user.ProfilePicturePath)
-                ? Url.Content("~/Content/Images/default-profile2.png")
-                : Url.Content(user.ProfilePicturePath);
+                ? "~/Content/Images/default-profile2.png"
+                : user.ProfilePicturePath;
 
             var posts = db.Posts.Include("User").AsQueryable();
 
