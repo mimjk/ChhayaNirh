@@ -44,9 +44,9 @@
         transition: background-color 0.3s ease;
     }
 
-    .back-btn:hover {
-        background: rgba(255, 255, 255, 0.3);
-    }
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
 
     .chat-title {
         font-size: 20px;
@@ -67,15 +67,16 @@
     .chat-message {
         display: flex;
         margin-bottom: 10px;
+        cursor: pointer;
     }
 
-    .chat-message.sent {
-        justify-content: flex-end;
-    }
+        .chat-message.sent {
+            justify-content: flex-end;
+        }
 
-    .chat-message.received {
-        justify-content: flex-start;
-    }
+        .chat-message.received {
+            justify-content: flex-start;
+        }
 
     .message-bubble {
         max-width: 70%;
@@ -85,22 +86,39 @@
         position: relative;
     }
 
-    .message-bubble.sent {
-        background-color: #5C0002;
-        color: white;
-        border-bottom-right-radius: 6px;
-    }
+        .message-bubble.sent {
+            background-color: #5C0002;
+            color: white;
+            border-bottom-right-radius: 6px;
+        }
 
-    .message-bubble.received {
-        background-color: #e4e6ea;
-        color: #333;
-        border-bottom-left-radius: 6px;
+        .message-bubble.received {
+            background-color: #e4e6ea;
+            color: #333;
+            border-bottom-left-radius: 6px;
+        }
+
+    .message-content {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
     }
 
     .message-text {
         margin: 0;
         font-size: 14px;
         line-height: 1.4;
+        flex-grow: 1;
+    }
+
+    .message-status {
+        font-size: 12px;
+        opacity: 0.7;
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        margin-top: 4px;
+        justify-content: flex-end;
     }
 
     .message-time {
@@ -108,6 +126,32 @@
         opacity: 0.7;
         margin-top: 4px;
         display: block;
+    }
+
+    .status-indicator {
+        font-size: 12px;
+        margin-left: 4px;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .status-sent {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .status-delivered {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .status-read {
+        color: #4CAF50; /* Green for read status */
+    }
+
+    .status-text {
+        font-size: 10px;
+        opacity: 0.6;
+        margin-top: 2px;
+        display: none; /* Hidden by default, shown on click */
     }
 
     .message-input-container {
@@ -138,10 +182,10 @@
         background-color: #f8f9fa;
     }
 
-    .message-input:focus {
-        border-color: #5C0002;
-        background-color: white;
-    }
+        .message-input:focus {
+            border-color: #5C0002;
+            background-color: white;
+        }
 
     .send-btn {
         background-color: #5C0002;
@@ -159,14 +203,14 @@
         flex-shrink: 0;
     }
 
-    .send-btn:hover:not(:disabled) {
-        background-color: #7a1a1c;
-    }
+        .send-btn:hover:not(:disabled) {
+            background-color: #7a1a1c;
+        }
 
-    .send-btn:disabled {
-        background-color: #ccc;
-        cursor: not-allowed;
-    }
+        .send-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
 
     .no-messages {
         text-align: center;
@@ -174,11 +218,11 @@
         padding: 40px 20px;
     }
 
-    .no-messages i {
-        font-size: 48px;
-        margin-bottom: 15px;
-        color: #ddd;
-    }
+        .no-messages i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
 
     .typing-indicator {
         display: none;
@@ -192,13 +236,16 @@
         max-width: 100px;
     }
 
-    /* Auto-scroll to bottom */
     .chat-box {
         scroll-behavior: smooth;
     }
 
-    /* Mobile responsive */
- 
+    /* Animation for new messages */
+    .message-animate {
+        animation: slideInUp 0.3s ease-out;
+    }
+
+
 </style>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -216,10 +263,48 @@
         {
             foreach (var msg in Model)
             {
-                <div class="chat-message @(msg.SenderId == currentUserId ? "sent" : "received")">
+                <div class="chat-message @(msg.SenderId == currentUserId ? "sent" : "received")"
+                     data-message-id="@msg.Id"
+                     onclick="toggleStatusText(@msg.Id)">
                     <div class="message-bubble @(msg.SenderId == currentUserId ? "sent" : "received")">
-                        <p class="message-text">@msg.MessageText</p>
+                        <div class="message-content">
+                            <p class="message-text">@msg.MessageText</p>
+                            @if (msg.SenderId == currentUserId)
+                            {
+                                <span class="status-indicator status-@msg.MessageStatus" id="status-@msg.Id">
+                                    @if (msg.MessageStatus == "sent")
+                                    {
+                                        <i class="fas fa-check"></i>
+                                    }
+                                    else if (msg.MessageStatus == "delivered")
+                                    {
+                                        <i class="fas fa-check-double"></i>
+                                    }
+                                    else if (msg.MessageStatus == "read")
+                                    {
+                                        <i class="fas fa-check-double"></i>
+                                    }
+                                </span>
+                            }
+                        </div>
                         <span class="message-time">@msg.SentAt.ToString("HH:mm")</span>
+                        <div class="status-text" id="statusText-@msg.Id">
+                            @if (msg.SenderId == currentUserId)
+                            {
+                                if (msg.MessageStatus == "sent")
+                                {
+                                    <text>Sent</text>
+                                }
+                                else if (msg.MessageStatus == "delivered")
+                                {
+                                    <text>Delivered</text>
+                                }
+                                else if (msg.MessageStatus == "read")
+                                {
+                                    <text>Seen</text>
+                                }
+                            }
+                        </div>
                     </div>
                 </div>
             }
@@ -238,73 +323,268 @@
     </div>
 
     <div class="message-input-container">
-        @using (Html.BeginForm("SendMessage", "Chat", FormMethod.Post, new { @class = "message-input-form", id = "messageForm" }))
-        {
-            @Html.AntiForgeryToken()
-            <input type="hidden" name="ReceiverId" value="@receiverId" />
-            <textarea name="MessageText"
-                      id="messageInput"
+        <div class="message-input-form" id="messageForm">
+            <textarea id="messageInput"
                       class="message-input"
                       placeholder="Type a message..."
                       required
-                      rows="1"
-                      onkeydown="handleKeyDown(event)"
-                      oninput="adjustTextareaHeight(this); toggleSendButton()"></textarea>
-            <button type="submit" class="send-btn" id="sendBtn" disabled>
+                      rows="1"></textarea>
+            <button type="button" class="send-btn" id="sendBtn" disabled onclick="sendMessage()">
                 <i class="fas fa-paper-plane"></i>
             </button>
-        }
+        </div>
     </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/Scripts/jquery.signalR-2.4.3.min.js"></script>
+<script src="~/signalr/hubs"></script>
+
 <script>
+    var currentUserId = @currentUserId;
+    var receiverId = @receiverId;
+    var connection;
+
     $(document).ready(function() {
-        // Scroll to bottom when page loads
+        // Initialize SignalR connection (ASP.NET SignalR syntax)
+        connection = $.connection.chatHub;
+
+        // Define client methods
+        connection.client.messageReceived = function (message) {
+            if (message.SenderId !== currentUserId) {
+                addMessageToChat(message, false);
+                // Mark as read immediately when viewing
+                connection.server.markAsRead(currentUserId, message.SenderId);
+            } else {
+                // Update status of sent message
+                updateMessageStatus(message.Id, message.Status);
+            }
+            scrollToBottom();
+        };
+
+        // Handle message status updates
+        connection.client.messagesDelivered = function (data) {
+            if (data.SenderId === currentUserId) {
+                data.MessageIds.forEach(function(messageId) {
+                    updateMessageStatus(messageId, "delivered");
+                });
+            }
+        };
+
+        connection.client.messagesRead = function (data) {
+            if (data.SenderId === currentUserId) {
+                data.MessageIds.forEach(function(messageId) {
+                    updateMessageStatus(messageId, "read");
+                });
+            }
+        };
+
+        // Handle individual message status updates
+        connection.client.messageStatusUpdated = function (data) {
+            if (data.SenderId === currentUserId) {
+                updateMessageStatus(data.MessageId, data.Status);
+            }
+        };
+
+        // Start connection
+        $.connection.hub.start().then(function () {
+            console.log("Connected to ChatHub");
+            connection.server.joinChat(currentUserId, receiverId);
+        }).fail(function (err) {
+            console.error("SignalR connection failed:", err);
+        });
+
+        // Setup event handlers
+        setupEventHandlers();
+
+        // Scroll to bottom and focus on input
         scrollToBottom();
-
-        // Focus on input
         $('#messageInput').focus();
-
-        // Auto-resize textarea and enable/disable send button
         toggleSendButton();
     });
 
+    function setupEventHandlers() {
+        // Handle Enter key and input changes
+        $('#messageInput').on('keydown', function(event) {
+            handleKeyDown(event);
+        });
+
+        $('#messageInput').on('input', function() {
+            adjustTextareaHeight(this);
+            toggleSendButton();
+        });
+    }
+
+    function addMessageToChat(message, isSent) {
+        // Remove any temporary message if this is a real message from server
+        if (!isSent && message.Id) {
+            $(`.chat-message[data-message-id^="temp-"]`).remove();
+        }
+
+        var messageClass = isSent ? 'sent' : 'received';
+        var statusHtml = '';
+
+        if (isSent) {
+            var statusIcon = message.Status === 'sent' ? 'fa-check' :
+                           message.Status === 'delivered' ? 'fa-check-double' : 'fa-check-double';
+            var statusClass = 'status-' + message.Status;
+
+            statusHtml = `<span class="status-indicator ${statusClass}" id="status-${message.Id}">
+                            <i class="fas ${statusIcon}"></i>
+                          </span>`;
+        }
+
+        var messageHtml = `
+            <div class="chat-message ${messageClass} message-animate" data-message-id="${message.Id}" onclick="toggleStatusText(${message.Id})">
+                <div class="message-bubble ${messageClass}">
+                    <div class="message-content">
+                        <p class="message-text">${escapeHtml(message.MessageText)}</p>
+                        ${statusHtml}
+                    </div>
+                    <span class="message-time">${new Date(message.SentAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                    <div class="status-text" id="statusText-${message.Id}">
+                        ${isSent ? getStatusText(message.Status) : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        $('.no-messages').hide();
+        $('#chatBox').append(messageHtml);
+        scrollToBottom();
+    }
+
+    function updateMessageStatus(messageId, status) {
+        var statusElement = $('#status-' + messageId);
+        var statusTextElement = $('#statusText-' + messageId);
+
+        if (statusElement.length) {
+            // Remove existing classes
+            statusElement.removeClass('status-sent status-delivered status-read');
+            statusElement.addClass('status-' + status);
+
+            // Update icon
+            var icon = statusElement.find('i');
+            if (status === 'sent') {
+                icon.removeClass().addClass('fas fa-check');
+            } else if (status === 'delivered' || status === 'read') {
+                icon.removeClass().addClass('fas fa-check-double');
+            }
+
+            // Update status text
+            statusTextElement.text(getStatusText(status));
+        }
+    }
+
+    function getStatusText(status) {
+        switch(status) {
+            case 'sent': return 'Sent';
+            case 'delivered': return 'Delivered';
+            case 'read': return 'Seen';
+            default: return '';
+        }
+    }
+
+    function sendMessage() {
+        var messageText = $('#messageInput').val().trim();
+        if (messageText === '') return;
+
+        // Create temporary message object
+        var tempMessage = {
+            Id: "temp-" + Date.now(), // Temporary ID with prefix
+            SenderId: currentUserId,
+            ReceiverId: receiverId,
+            MessageText: messageText,
+            SentAt: new Date(),
+            Status: 'sent'
+        };
+
+        // Add to chat immediately
+        addMessageToChat(tempMessage, true);
+
+        // Clear input
+        $('#messageInput').val('');
+        adjustTextareaHeight($('#messageInput')[0]);
+        toggleSendButton();
+        scrollToBottom();
+
+        // Send via SignalR (correct ASP.NET SignalR syntax)
+        connection.server.sendMessage(currentUserId, receiverId, messageText)
+            .fail(function (err) {
+                console.error("Error sending message:", err);
+                // Remove the temporary message on error
+                $(`[data-message-id="${tempMessage.Id}"]`).remove();
+                alert("Failed to send message. Please try again.");
+            });
+    }
+
     function scrollToBottom() {
         const chatBox = document.getElementById('chatBox');
-        chatBox.scrollTop = chatBox.scrollHeight;
+        if (chatBox) {
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
     }
 
     function adjustTextareaHeight(textarea) {
-        textarea.style.height = 'auto';
-        textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px';
+        if (textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px';
+        }
     }
 
     function toggleSendButton() {
         const input = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
-        sendBtn.disabled = input.value.trim() === '';
+        if (input && sendBtn) {
+            sendBtn.disabled = input.value.trim() === '';
+        }
     }
 
     function handleKeyDown(event) {
         if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault();
-            const form = document.getElementById('messageForm');
             const input = document.getElementById('messageInput');
 
-            if (input.value.trim() !== '') {
-                form.submit();
+            if (input && input.value.trim() !== '') {
+                sendMessage();
             }
         }
     }
 
-    function goBack() {
-         window.location.href = '@Url.Action("Chat", "Chat")';
-
+    function toggleStatusText(messageId) {
+        var statusText = $('#statusText-' + messageId);
+        if (statusText.is(':visible')) {
+            statusText.hide();
+        } else {
+            // Hide all other status texts first
+            $('.status-text').hide();
+            statusText.show();
+        }
     }
 
-    // Optional: Auto-refresh messages every 5 seconds
-    // setInterval(function() {
-    //     location.reload();
-    // }, 5000);
+    function goBack() {
+        if (connection) {
+            connection.server.leaveChat(currentUserId, receiverId);
+        }
+        window.location.href = '@Url.Action("Chat", "Chat")';
+    }
+
+    // Utility function to escape HTML
+    function escapeHtml(text) {
+        var map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+    }
+
+    // Handle connection cleanup on page unload
+    window.addEventListener('beforeunload', function() {
+        if (connection) {
+            connection.server.leaveChat(currentUserId, receiverId);
+        }
+    });
 </script>

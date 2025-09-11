@@ -34,6 +34,20 @@
         <!-- Owner Fields -->
         <div id="ownerFields" style="display:none;">
             <h5 class="mt-4">🏠 Owner Details</h5>
+
+            <!-- Rent Type Section - This will show when Owner is selected -->
+            <div id="rentTypeSection" class="mb-3">
+                <label class="form-label">To whom do you want to rent:</label><br />
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" name="RentType" value="Families Only" id="familiesOnly" />
+                    <label class="form-check-label" for="familiesOnly">Families</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" name="RentType" value="Bachelors Only" id="bachelorsOnly" />
+                    <label class="form-check-label" for="bachelorsOnly">Bachelors</label>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">House Type</label>
@@ -161,8 +175,19 @@
         // Toggle Owner/Renter fields
         function toggleFields() {
             var type = document.getElementById("postType").value;
-            document.getElementById("ownerFields").style.display = type === "Owner" ? "block" : "none";
-            document.getElementById("renterFields").style.display = type === "Renter" ? "block" : "none";
+            var ownerFields = document.getElementById("ownerFields");
+            var renterFields = document.getElementById("renterFields");
+
+            if (type === "Owner") {
+                ownerFields.style.display = "block";
+                renterFields.style.display = "none";
+            } else if (type === "Renter") {
+                ownerFields.style.display = "none";
+                renterFields.style.display = "block";
+            } else {
+                ownerFields.style.display = "none";
+                renterFields.style.display = "none";
+            }
 
             // After toggle, force map resize in case layout changed
             if (window.L && window.map) {

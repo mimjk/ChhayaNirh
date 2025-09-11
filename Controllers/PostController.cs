@@ -33,6 +33,13 @@ namespace ChhayaNirh.Controllers
             post.UserId = userId;
             post.CreatedAt = DateTime.Now;
             post.LikeCount = 0; // Initialize like count
+            string rentType = "";
+            if (Request.Form["RentType"] != null)
+            {
+                var selected = Request.Form.GetValues("RentType");
+                rentType = string.Join(", ", selected);
+            }
+            post.Rent_Type = rentType;
 
             // Save Latitude and Longitude from form
             if (Request.Form["Latitude"] != null && Request.Form["Longitude"] != null)

@@ -13,6 +13,8 @@ namespace ChhayaNirh.Models
 
         [Required(ErrorMessage = "Please select post type")]
         public string PostType { get; set; } // "Owner" or "Renter"
+        public string Rent_Type { get; set; } // "Families Only", "Bachelors Only", or "Both"
+
 
         [Required(ErrorMessage = "Please enter area")]
         public string Area { get; set; }
