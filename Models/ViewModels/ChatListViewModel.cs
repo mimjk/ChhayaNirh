@@ -9,5 +9,6 @@ namespace ChhayaNirh.ViewModels
         public string LastMessageText { get; set; }
         public DateTime LastMessageTime { get; set; }
         public string ProfilePicturePath { get; set; }
+        public int UnreadCount { get; set; } = 0;
     }
 }

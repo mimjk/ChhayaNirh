@@ -21,7 +21,12 @@ namespace ChhayaNirh.Models
         [Required]
         public DateTime SentAt { get; set; } = DateTime.Now;
 
+        // Message status tracking
+        public bool IsDelivered { get; set; } = false;
+        public DateTime? DeliveredAt { get; set; }
+
         public bool IsRead { get; set; } = false;
+        public DateTime? ReadAt { get; set; }
 
         // Navigation properties
         [ForeignKey("SenderId")]
@@ -29,5 +34,17 @@ namespace ChhayaNirh.Models
 
         [ForeignKey("ReceiverId")]
         public virtual User Receiver { get; set; }
+
+        // Helper property to get message status
+        [NotMapped]
+        public string MessageStatus
+        {
+            get
+            {
+                if (IsRead) return "read";
+                if (IsDelivered) return "delivered";
+                return "sent";
+            }
+        }
     }
 }

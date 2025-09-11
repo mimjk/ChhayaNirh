@@ -7,7 +7,6 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     @RenderSection("styles", required: false)  <!-- page-specific CSS -->
-
     <!-- Custom navbar link styles -->
     <style>
         /* Make navbar links look like the brand link */
@@ -28,7 +27,7 @@
 </head>
 
 <script>
-(function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="43zz4whtTkAoolNAsyH83";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+    (function () { if (!window.chatbase || window.chatbase("getState") !== "initialized") { window.chatbase = (...arguments) => { if (!window.chatbase.q) { window.chatbase.q = [] } window.chatbase.q.push(arguments) }; window.chatbase = new Proxy(window.chatbase, { get(target, prop) { if (prop === "q") { return target.q } return (...args) => target(prop, ...args) } }) } const onLoad = function () { const script = document.createElement("script"); script.src = "https://www.chatbase.co/embed.min.js"; script.id = "43zz4whtTkAoolNAsyH83"; script.domain = "www.chatbase.co"; document.body.appendChild(script) }; if (document.readyState === "complete") { onLoad() } else { window.addEventListener("load", onLoad) } })();
 </script>
 
 <body style="background-color: #FAF0E6; ">
@@ -51,9 +50,26 @@
                 <ul class="navbar-nav ms-auto">
                     @if (Session["UserId"] != null)
                     {
-                        <li class="nav-item">
+                        <li class="nav-item" style="position: relative;">
                             @Html.ActionLink("💬 Chat", "Chat", "Chat", null, new { @class = "nav-link" })
+                            <span id="chatNotificationBadge"
+                                  style="position: absolute;
+                 top: -5px;
+                 right: -10px;
+                 background: #ff4444;
+                 color: white;
+                 border-radius: 50%;
+                 width: 20px;
+                 height: 20px;
+                 font-size: 12px;
+                 display: none;
+                 align-items: center;
+                 justify-content: center;
+                 font-weight: bold;
+                 z-index: 1000;">
+                            </span>
                         </li>
+
 
                         if (Session["UserType"] != null && Session["UserType"].ToString() == "Admin")
                         {
@@ -99,6 +115,67 @@
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    <!-- Add SignalR scripts -->
+    <script src="~/Scripts/jquery.signalR-2.4.3.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+
     @RenderSection("scripts", required: false)   <!-- page-specific JS -->
+    <!-- Add this script before closing </body> tag in _Layout.cshtml -->
+
+    <script>
+// Global notification management
+$(document).ready(function() {
+    @if (Session["UserId"] != null)
+    {
+        <text>
+        // Load initial unread count
+        loadUnreadMessageCount();
+
+        // Setup global SignalR connection for notifications if not on chat pages
+        if (!window.location.pathname.includes('/Chat/')) {
+            setupGlobalChatNotifications();
+        }
+        </text>
+    }
+});
+
+function loadUnreadMessageCount() {
+    // You can create an AJAX call to get initial unread count
+    // For now, we'll let the chat page handle it
+}
+
+function setupGlobalChatNotifications() {
+    var globalConnection = $.connection.chatHub;
+    var currentUserId = @(Session["UserId"] ?? 0);
+
+    if (currentUserId > 0) {
+        globalConnection.client.messageReceived = function (message) {
+            if (message.ReceiverId === currentUserId) {
+                // Show notification badge
+                var badge = $('#chatNotificationBadge');
+                var currentCount = parseInt(badge.text()) || 0;
+                badge.text(currentCount + 1).show();
+
+                // Optional: Show browser notification
+                if (Notification.permission === 'granted') {
+                    new Notification('New message', {
+                        body: 'You have a new message',
+                        icon: '/Content/Images/chat-icon.png' // Add your icon
+                    });
+                }
+            }
+        };
+
+        $.connection.hub.start().then(function () {
+            console.log("Global chat notifications connected");
+        });
+    }
+}
+
+// Request notification permission on first visit
+if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
+}
+    </script>
 </body>
 </html>

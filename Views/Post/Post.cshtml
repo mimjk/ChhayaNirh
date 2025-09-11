@@ -16,7 +16,7 @@
                      class="rounded-circle"
                      width="50" height="50"
                      style="object-fit: cover; border: 2px solid #5C0002;"
-                 onerror="this.src='@Url.Content("~/Content/Images/default-profile2.png")'" />
+                     onerror="this.src='@Url.Content("~/Content/Images/default-profile2.png")'" />
             </a>
             <a href="@Url.Action("CreatePost", "Post")" class="flex-grow-1 ms-3 text-decoration-none">
                 <div class="form-control bg-light" style="cursor: pointer;">
@@ -119,6 +119,12 @@
                                     <h4 class="text-success fw-bold mb-0">৳@post.RentAmount</h4>
                                     <small class="text-muted">per month</small>
                                 </div>
+                                if (!string.IsNullOrEmpty(post.Rent_Type))
+                                {
+                                    <div class="mt-2 text-center">
+                                        <small class="text-info"><strong>For:</strong> @post.Rent_Type</small>
+                                    </div>
+                                }
                             }
                             else if (post.PostType == "Renter")
                             {
@@ -155,10 +161,9 @@
 
 <script>
     function openPostDetails(postId) {
-    if (!postId) return; // safeguard
-    window.location.href = '@Url.Action("PostDetails", "Post")' + '?id=' + postId;
-}
-
+        if (!postId) return; // safeguard
+        window.location.href = '@Url.Action("PostDetails", "Post")' + '?id=' + postId;
+    }
 
     // Add hover effect
     $(document).ready(function() {

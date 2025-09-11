@@ -30,7 +30,6 @@
                 <i class="fas fa-flag"></i> Report Post
             </button>
         }
-
     </div>
 
     <!-- Post Content -->
@@ -68,6 +67,12 @@
                             <div class="col-6"><small><strong>Bedrooms:</strong> @Model.Bedrooms</small></div>
                             <div class="col-6"><small><strong>Bathrooms:</strong> @Model.Bathrooms</small></div>
                             <div class="col-12 mt-1"><small><strong>Rent:</strong> <span class="text-success fw-bold">৳@Model.RentAmount</span></small></div>
+                            @if (!string.IsNullOrEmpty(Model.Rent_Type))
+                            {
+                                <div class="col-12 mt-1">
+                                    <small><strong>Available for:</strong> <span class="text-info fw-bold">@Model.Rent_Type</span></small>
+                                </div>
+                            }
                         </div>
                     }
                     @if (Model.PostType == "Renter")
@@ -140,11 +145,12 @@
                 }
                 else
                 {
-            <button class="action-btn contact-btn" onclick="window.location.href='@Url.Action("Inbox", "Chat", new { userId = Model.UserId })'">
-                <i class="fas fa-envelope"></i> Contact
-            </button>
+                    <button class="action-btn contact-btn" onclick="window.location.href='@Url.Action("Inbox", "Chat", new { userId = Model.UserId })'">
+                        <i class="fas fa-envelope"></i> Contact
+                    </button>
                 }
             </div>
+
             <!-- Electricity Bill Display Section - Only visible to post owner and admins -->
             @if ((ViewBag.CurrentUserId == Model.UserId || ViewBag.IsAdmin) && !string.IsNullOrEmpty(Model.ElectricityBillPath))
             {
@@ -283,9 +289,6 @@
     </div>
 </div>
 
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 

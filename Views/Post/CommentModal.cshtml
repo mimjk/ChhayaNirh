@@ -9,7 +9,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-
 <div class="comment-page-container">
     <!-- Page Header -->
     <div class="comment-page-header">
@@ -50,6 +49,12 @@
                             <div class="col-12 mt-1">
                                 <small><strong>Rent:</strong> <span class="text-success fw-bold">৳@Model.RentAmount</span></small>
                             </div>
+                            @if (!string.IsNullOrEmpty(Model.Rent_Type))
+                            {
+                                <div class="col-12 mt-1">
+                                    <small><strong>Available for:</strong> <span class="text-info fw-bold">@Model.Rent_Type</span></small>
+                                </div>
+                            }
                         </div>
                     }
                     else if (Model.PostType == "Renter")
