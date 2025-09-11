@@ -254,13 +254,23 @@
     <Compile Include="Migrations\202509082012359_AddElectricityBillToPost.Designer.cs">
       <DependentUpon>202509082012359_AddElectricityBillToPost.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202509102045518_AddChatTable.cs" />
+    <Compile Include="Migrations\202509102045518_AddChatTable.Designer.cs">
+      <DependentUpon>202509102045518_AddChatTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202509102059403_AddChatTable1.cs" />
+    <Compile Include="Migrations\202509102059403_AddChatTable1.Designer.cs">
+      <DependentUpon>202509102059403_AddChatTable1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
+    <Compile Include="Models\Chat.cs" />
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\Like.cs" />
     <Compile Include="Models\Post.cs" />
     <Compile Include="Models\Report.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\ViewModels\ChatListViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -342,6 +352,7 @@
     <Content Include="Views\Profile\VerifyProfile.cshtml" />
     <Content Include="Views\Signup\VerifyEmail.cshtml" />
     <Content Include="Views\Post\VerifyPost.cshtml" />
+    <Content Include="Views\Chat\Inbox.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -394,6 +405,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202509082012359_AddElectricityBillToPost.resx">
       <DependentUpon>202509082012359_AddElectricityBillToPost.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202509102045518_AddChatTable.resx">
+      <DependentUpon>202509102045518_AddChatTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202509102059403_AddChatTable1.resx">
+      <DependentUpon>202509102059403_AddChatTable1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -1,8 +1,192 @@
-﻿@{
-    ViewBag.Title = "Chat";
+﻿@model List<ChhayaNirh.ViewModels.ChatListViewModel>
+@{
+    ViewBag.Title = "Your Chats";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<main class="container my-5">
-    <h2>Chat Page</h2>
-    <p>This is the chat page. Users can communicate here.</p>
-</main>
+<style>
+    .chat-list-container {
+        max-width: 800px;
+        margin: 20px auto;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .chat-header {
+        background-color: #5C0002;
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
+
+        .chat-header h3 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+    .chat-preview {
+        padding: 20px;
+        border-bottom: 1px solid #e4e6ea;
+        transition: background-color 0.3s ease;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: between;
+    }
+
+        .chat-preview:hover {
+            background-color: #f8f9fa;
+        }
+
+        .chat-preview:last-child {
+            border-bottom: none;
+        }
+
+    .chat-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        margin-right: 15px;
+        flex-shrink: 0;
+        overflow: hidden;
+        border: 2px solid #5C0002;
+    }
+
+        .chat-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+    .chat-info {
+        flex-grow: 1;
+        min-width: 0;
+    }
+
+    .chat-name {
+        font-weight: 600;
+        font-size: 18px;
+        color: #5C0002;
+        margin: 0 0 5px 0;
+    }
+
+    .chat-last-message {
+        color: #65676b;
+        font-size: 14px;
+        margin: 0 0 5px 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .chat-time {
+        color: #999;
+        font-size: 12px;
+        margin: 0;
+    }
+
+    .chat-action {
+        margin-left: 15px;
+        flex-shrink: 0;
+    }
+
+    .chat-btn {
+        background-color: #5C0002;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        transition: background-color 0.3s ease;
+        display: inline-block;
+    }
+
+        .chat-btn:hover {
+            background-color: #7a1a1c;
+            color: white;
+            text-decoration: none;
+        }
+
+    .no-chats {
+        text-align: center;
+        padding: 60px 20px;
+        color: #65676b;
+    }
+
+        .no-chats i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #ccc;
+        }
+
+        .no-chats h4 {
+            margin-bottom: 10px;
+            color: #5C0002;
+        }
+
+        .no-chats p {
+            margin: 0;
+        }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+<div class="chat-list-container" style="background-color: #FFFFF0;">
+    <div class="chat-header">
+        <h3><i class="fas fa-comments"></i> Your Conversations</h3>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        foreach (var chat in Model)
+        {
+            <div class="chat-preview" onclick="openChat(@chat.UserId)">
+                <div class="chat-avatar">
+                    <img src="@Url.Content(chat.ProfilePicturePath)"
+                         alt="@chat.UserName's Profile"
+                         onerror="this.src='@Url.Content("~/Content/Images/default-profile2.png")'" />
+                </div>
+                <div class="chat-info">
+                    <h5 class="chat-name">@chat.UserName</h5>
+                    <p class="chat-last-message">@chat.LastMessageText</p>
+                    <small class="chat-time">@chat.LastMessageTime.ToString("MMM dd, yyyy 'at' HH:mm")</small>
+                </div>
+                <div class="chat-action">
+                    <a href="@Url.Action("Inbox", "Chat", new { userId = chat.UserId })" class="chat-btn">
+                        <i class="fas fa-comment"></i> Open Chat
+                    </a>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="no-chats">
+            <i class="fas fa-comment-slash"></i>
+            <h4>No conversations yet</h4>
+            <p>Start a conversation by contacting someone from their post!</p>
+        </div>
+    }
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function openChat(userId) {
+        window.location.href = '@Url.Action("Inbox", "Chat")' + '?userId=' + userId;
+    }
+
+    // Add click effect to chat previews
+    $(document).ready(function() {
+        $('.chat-preview').click(function() {
+            $(this).css('background-color', '#f0f2f5');
+            setTimeout(() => {
+                $(this).css('background-color', '');
+            }, 200);
+        });
+    });
+</script>
