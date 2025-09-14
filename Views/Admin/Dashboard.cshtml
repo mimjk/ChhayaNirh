@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Admin Dashboard";
+}
+
+<div style="display: flex;">
+    <!-- Sidebar -->
+    @Html.Partial("_AdminSidebar")
+
+    <!-- Main Content -->
+    <div style="flex-grow: 1; padding: 30px;">
+        <h1 style="color: #5C0002; text-align: center; font-size: 2rem; margin-bottom: 20px;">📊 Admin Dashboard</h1>
+
+        <p style="color: #3B1F1F; font-size: 1.1rem; text-align: center;">
+            Welcome, Admin! Here's an overview of platform activity.
+        </p>
+
+        <div style="display: flex; justify-content: space-around; margin-top: 40px;">
+            <div style="background-color: #FBE9E7; padding: 20px; border-radius: 6px; width: 30%; text-align: center;">
+                <h3 style="color: #5C0002;">👥 Users</h3>
+                <p style="font-size: 1.5rem;">1,245</p>
+            </div>
+            <div style="background-color: #FBE9E7; padding: 20px; border-radius: 6px; width: 30%; text-align: center;">
+                <h3 style="color: #5C0002;">🏠 Posts</h3>
+                <p style="font-size: 1.5rem;">342</p>
+            </div>
+            <div style="background-color: #FBE9E7; padding: 20px; border-radius: 6px; width: 30%; text-align: center;">
+                <h3 style="color: #5C0002;">🚨 Reports</h3>
+                <p style="font-size: 1.5rem;">17</p>
+            </div>
+        </div>
+    </div>
+</div>

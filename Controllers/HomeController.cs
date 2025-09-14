@@ -24,5 +24,12 @@ namespace ChhayaNirh.Controllers
             return View();
         }
 
+        public ActionResult GenerateHash()
+        {
+            string password = "admin123";
+            string hash = BCrypt.Net.BCrypt.HashPassword(password);
+            return Content(hash);
+        }
+
     }
 }
