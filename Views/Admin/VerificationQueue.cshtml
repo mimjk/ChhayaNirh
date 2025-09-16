@@ -2,19 +2,30 @@
     ViewBag.Title = "Verification Queue";
 }
 
-<div style="display: flex;">
+<div style="display: flex; min-height: 80vh;">
+
+    <!-- Sidebar -->
     @Html.Partial("_AdminSidebar")
 
+    <!-- Main Content -->
     <div style="flex-grow: 1; padding: 30px;">
         <h2 style="color: #5C0002; margin-bottom: 20px;">✅ Verification Queue</h2>
 
         <div style="background-color: #FBE9E7; padding: 20px; border-radius: 6px;">
-            <p style="color: #3B1F1F;">Approve or reject user identity and property verifications.</p>
+            <p style="color: #3B1F1F;">Choose a type of verification to review:</p>
 
-            <ul style="padding-left: 20px; margin-top: 20px;">
-                <li style="margin-bottom: 10px;">User: Ishrat Jahan Mim — NID: 12345678901234567</li>
-                <li style="margin-bottom: 10px;">User: Twaseen Tabassum — NID: 47474747474747474</li>
-            </ul>
+            <div style="margin-top: 20px;">
+                <a href="@Url.Action("NIDVerificationQueue", "AdminVerification")"
+                   style="background-color: #5C0002; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; margin-right: 10px; font-weight: bold;">
+                    Users to Verify
+                </a>
+
+                <a href="@Url.Action("PostVerificationQueue", "AdminVerification")"
+                   style="background-color: #5C0002; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold;">
+                    Posts to Verify
+                </a>
+            </div>
         </div>
     </div>
+
 </div>
