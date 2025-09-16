@@ -1,0 +1,48 @@
+﻿@model ChhayaNirh.Models.User
+@{
+    ViewBag.Title = "Verify User";
+}
+
+<div style="display: flex; min-height: 80vh;">
+
+    <!-- Sidebar -->
+    @Html.Partial("_AdminSidebar")
+
+    <!-- Main Content -->
+    <div style="flex-grow: 1; padding: 30px;">
+        <h2 style="color:#5C0002; margin-bottom: 20px;">👤 User Verification</h2>
+
+        <p><strong>Name:</strong> @Model.FullName</p>
+        <p><strong>Email:</strong> @Model.Email</p>
+        <p><strong>Phone:</strong> @Model.Phone</p>
+        <p><strong>Date of Birth:</strong> @Model.DateOfBirth.ToString("MMMM dd, yyyy")</p>
+        <p><strong>NID Number:</strong> @Model.NIDNumber</p>
+        <p><strong>Present Address:</strong> @Model.PresentAddress</p>
+        <p><strong>Permanent Address:</strong> @Model.PermanentAddress</p>
+
+        @if (!string.IsNullOrEmpty(Model.NIDDocumentPath))
+        {
+            <p>
+                <strong>NID Document:</strong>
+                <a href="@Url.Content(Model.NIDDocumentPath)" target="_blank" style="color:#5C0002;">
+                    View Document
+                </a>
+            </p>
+        }
+
+        <div style="margin-top:20px;">
+            <form method="post" action="@Url.Action("ApproveVerification", "AdminVerification", new { id = Model.Id })" style="display:inline;">
+                <button type="submit" style="background-color:green; color:white; padding:10px 20px; border:none; border-radius:6px;">
+                    ✅ Approve
+                </button>
+            </form>
+
+            <form method="post" action="@Url.Action("RejectVerification", "AdminVerification", new { id = Model.Id })" style="display:inline; margin-left:10px;">
+                <button type="submit" style="background-color:red; color:white; padding:10px 20px; border:none; border-radius:6px;">
+                    ❌ Reject
+                </button>
+            </form>
+        </div>
+    </div>
+
+</div>
