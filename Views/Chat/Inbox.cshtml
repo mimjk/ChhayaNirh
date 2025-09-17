@@ -590,51 +590,30 @@
         }
     }
 
+    function escapeHtml(unsafe) {
+        return unsafe
+             .replace(/&/g, "&amp;")
+             .replace(/</g, "&lt;")
+             .replace(/>/g, "&gt;")
+             .replace(/"/g, "&quot;")
+             .replace(/'/g, "&#039;");
+    }
+
     function handleKeyDown(event) {
         if (event.key === 'Enter' && !event.shiftKey) {
-            event.preventDefault();
-            const input = document.getElementById('messageInput');
-
-            if (input && input.value.trim() !== '' && receiverId !== 0) {
-                sendMessage();
-            }
+            event.preventDefault(); // Prevent default Enter key behavior (new line)
+            sendMessage();
         }
     }
 
     function toggleStatusText(messageId) {
-        var statusText = $('#statusText-' + messageId);
-        if (statusText.is(':visible')) {
-            statusText.hide();
-        } else {
-            // Hide all other status texts first
-            $('.status-text').hide();
-            statusText.show();
+        var statusTextElement = $('#statusText-' + messageId);
+        if (statusTextElement.length) {
+            statusTextElement.toggle(); // Toggle visibility
         }
     }
 
     function goBack() {
-        if (connection && receiverId !== 0) {
-            connection.server.leaveChat(currentUserId, receiverId);
-        }
-        window.location.href = '@Url.Action("Chat", "Chat")';
+        window.history.back();
     }
-
-    // Utility function to escape HTML
-    function escapeHtml(text) {
-        var map = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#039;'
-        };
-        return text.replace(/[&<>"']/g, function(m) { return map[m]; });
-    }
-
-    // Handle connection cleanup on page unload
-    window.addEventListener('beforeunload', function() {
-        if (connection && receiverId !== 0) {
-            connection.server.leaveChat(currentUserId, receiverId);
-        }
-    });
 </script>
