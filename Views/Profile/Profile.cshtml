@@ -16,7 +16,6 @@
                     </div>
                 }
 
-                <!-- Profile Picture + Heading -->
                 <div class="d-flex flex-column align-items-center mb-4">
                     <img src="@(string.IsNullOrEmpty(Model.ProfilePicturePath) ? Url.Content("~/Content/Images/default-profile2.png") : Url.Content(Model.ProfilePicturePath))"
                          class="rounded-circle mb-3"
@@ -25,9 +24,15 @@
                     <h2 class="mb-0 text-center" style="color:#000000;">Your Profile</h2>
                 </div>
 
-                <!-- Profile Info -->
                 <div class="mb-3">
-                    <p><strong>Full Name:</strong> @Model.FullName</p>
+                    <p>
+                        <strong>Full Name:</strong>
+                        @Model.FullName
+                        @if (Model.IsVerified)
+                        {
+                            <span style="color:green; font-size:1.2em;">✔</span>
+                        }
+                    </p>
                     <p><strong>Email:</strong> @Model.Email</p>
                     <p><strong>Phone:</strong> @Model.Phone</p>
                     <p><strong>Date of Birth:</strong> @Model.DateOfBirth.ToString("MMMM dd, yyyy") (Age: @Model.Age years)</p>
@@ -59,16 +64,26 @@
                     </p>
 
                     <p><strong>Member Since:</strong> @Model.CreatedAt.ToString("MMMM dd, yyyy")</p>
+
+                    <p>
+                        <strong>Verification Status:</strong>
+                        @if (Model.IsVerified)
+                        {
+                            <span style="color:green; font-weight:bold;">Verified ✔</span>
+                        }
+                        else
+                        {
+                            <span style="color:red; font-weight:bold;">Not Verified ✖</span>
+                        }
+                    </p>
                 </div>
 
-                <!-- Buttons -->
                 <div class="d-flex justify-content-center mt-4 gap-4">
                     <a href="@Url.Action("EditProfile", "Profile")"
                        class="btn"
                        style="background-color: #5C0002; color: #fff; border: none; ">
                         Edit Profile
                     </a>
-                    <!-- Verify Profile Button -->
                     <a href="@Url.Action("VerifyProfile", "Profile")"
                        class="btn"
                        style="background-color: lightskyblue; color: #fff; border: none;">
