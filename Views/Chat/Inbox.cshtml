@@ -98,6 +98,14 @@
             border-bottom-left-radius: 6px;
         }
 
+        /* 🔹 Special styling for Admin messages */
+        .message-bubble.admin {
+            background-color: #1976D2;
+            color: white;
+            border-bottom-left-radius: 6px;
+            border-left: 4px solid #0D47A1;
+        }
+
     .message-content {
         display: flex;
         align-items: flex-end;
@@ -245,7 +253,16 @@
         animation: slideInUp 0.3s ease-out;
     }
 
-
+    /* 🔹 Admin restriction message */
+    .admin-restriction {
+        color: red;
+        font-weight: bold;
+        text-align: center;
+        padding: 15px;
+        background-color: #ffebee;
+        border-radius: 8px;
+        border: 1px solid #ffcdd2;
+    }
 </style>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -263,10 +280,14 @@
         {
             foreach (var msg in Model)
             {
-                <div class="chat-message @(msg.SenderId == currentUserId ? "sent" : "received")"
+                var isAdmin = (msg.SenderId == 0);
+                var messageClass = msg.SenderId == currentUserId ? "sent" : "received";
+                var bubbleClass = isAdmin ? "admin" : messageClass;
+
+                <div class="chat-message @messageClass"
                      data-message-id="@msg.Id"
                      onclick="toggleStatusText(@msg.Id)">
-                    <div class="message-bubble @(msg.SenderId == currentUserId ? "sent" : "received")">
+                    <div class="message-bubble @bubbleClass">
                         <div class="message-content">
                             <p class="message-text">@msg.MessageText</p>
                             @if (msg.SenderId == currentUserId)
@@ -323,16 +344,27 @@
     </div>
 
     <div class="message-input-container">
-        <div class="message-input-form" id="messageForm">
-            <textarea id="messageInput"
-                      class="message-input"
-                      placeholder="Type a message..."
-                      required
-                      rows="1"></textarea>
-            <button type="button" class="send-btn" id="sendBtn" disabled onclick="sendMessage()">
-                <i class="fas fa-paper-plane"></i>
-            </button>
-        </div>
+        @* 🔹 Check if user is trying to message Admin *@
+        @if (ViewBag.ReceiverId == 3)
+        {
+            <div class="admin-restriction">
+                <i class="fas fa-exclamation-triangle"></i>
+                You cannot reply to Admin messages.
+            </div>
+        }
+        else
+        {
+            <div class="message-input-form" id="messageForm">
+                <textarea id="messageInput"
+                          class="message-input"
+                          placeholder="Type a message..."
+                          required
+                          rows="1"></textarea>
+                <button type="button" class="send-btn" id="sendBtn" disabled onclick="sendMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        }
     </div>
 </div>
 
@@ -346,6 +378,23 @@
     var connection;
 
     $(document).ready(function() {
+        // Only initialize SignalR if not chatting with Admin
+        if (receiverId !== 0) {
+            initializeSignalR();
+        }
+
+        // Setup event handlers
+        setupEventHandlers();
+
+        // Scroll to bottom and focus on input
+        scrollToBottom();
+        if (receiverId !== 0) {
+            $('#messageInput').focus();
+        }
+        toggleSendButton();
+    });
+
+    function initializeSignalR() {
         // Initialize SignalR connection (ASP.NET SignalR syntax)
         connection = $.connection.chatHub;
 
@@ -393,26 +442,20 @@
         }).fail(function (err) {
             console.error("SignalR connection failed:", err);
         });
-
-        // Setup event handlers
-        setupEventHandlers();
-
-        // Scroll to bottom and focus on input
-        scrollToBottom();
-        $('#messageInput').focus();
-        toggleSendButton();
-    });
+    }
 
     function setupEventHandlers() {
-        // Handle Enter key and input changes
-        $('#messageInput').on('keydown', function(event) {
-            handleKeyDown(event);
-        });
+        // Handle Enter key and input changes (only if not Admin chat)
+        if (receiverId !== 0) {
+            $('#messageInput').on('keydown', function(event) {
+                handleKeyDown(event);
+            });
 
-        $('#messageInput').on('input', function() {
-            adjustTextareaHeight(this);
-            toggleSendButton();
-        });
+            $('#messageInput').on('input', function() {
+                adjustTextareaHeight(this);
+                toggleSendButton();
+            });
+        }
     }
 
     function addMessageToChat(message, isSent) {
@@ -486,6 +529,13 @@
     }
 
     function sendMessage() {
+        // Don't send if chatting with Admin
+        if (receiverId === 3) { // Admin ID
+        alert("You cannot send messages to Admin.");
+        return;
+    }
+
+
         var messageText = $('#messageInput').val().trim();
         if (messageText === '') return;
 
@@ -536,7 +586,7 @@
         const input = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
         if (input && sendBtn) {
-            sendBtn.disabled = input.value.trim() === '';
+            sendBtn.disabled = input.value.trim() === '' || receiverId === 0;
         }
     }
 
@@ -545,7 +595,7 @@
             event.preventDefault();
             const input = document.getElementById('messageInput');
 
-            if (input && input.value.trim() !== '') {
+            if (input && input.value.trim() !== '' && receiverId !== 0) {
                 sendMessage();
             }
         }
@@ -563,7 +613,7 @@
     }
 
     function goBack() {
-        if (connection) {
+        if (connection && receiverId !== 0) {
             connection.server.leaveChat(currentUserId, receiverId);
         }
         window.location.href = '@Url.Action("Chat", "Chat")';
@@ -583,7 +633,7 @@
 
     // Handle connection cleanup on page unload
     window.addEventListener('beforeunload', function() {
-        if (connection) {
+        if (connection && receiverId !== 0) {
             connection.server.leaveChat(currentUserId, receiverId);
         }
     });
