@@ -123,7 +123,11 @@
                     <div class="post-images">
                         @foreach (var imagePath in Model.MediaPaths.Split(','))
                         {
-                            <img src="@Url.Content(imagePath.Trim())" alt="Post Image" />
+                            <!-- onclick event and cursor pointer to make images clickable -->
+                            <img src="@Url.Content(imagePath.Trim())"
+                                 alt="Post Image"
+                                 style="cursor: pointer;"
+                                 onclick="viewImageFullScreen('@Url.Content(imagePath.Trim())')" />
                         }
                     </div>
                 }
@@ -301,7 +305,20 @@
         </div>
     </div>
 </div>
-
+    @*< !--: Post Image Modal for full screen viewing -- >*@
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Post Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center p-1">
+                <img id="fullPostImage" src="" alt="Full Post Image" class="img-fluid" style="max-height: 80vh;" />
+            </div>
+        </div>
+    </div>
+</div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -483,6 +500,12 @@
         $('#fullBillImage').attr('src', imagePath);
         var billModal = new bootstrap.Modal(document.getElementById('billModal'));
         billModal.show();
+    }
+        // Function to view post images in full screen
+    function viewImageFullScreen(imagePath) {
+        $('#fullPostImage').attr('src', imagePath);
+        var imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+        imageModal.show();
     }
 </script>
 
