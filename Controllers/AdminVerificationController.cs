@@ -10,6 +10,8 @@ namespace ChhayaNirh.Controllers
     {
         private readonly ApplicationDbContext db = new ApplicationDbContext();
 
+        // -------------------- NID Verification --------------------
+
         // Show list of users with uploaded NID but not verified
         public ActionResult NIDVerificationQueue()
         {
@@ -27,7 +29,7 @@ namespace ChhayaNirh.Controllers
             return View(user);
         }
 
-        // 🔹 Approve Verification - FIXED
+        // Approve Verification
         [HttpPost]
         public ActionResult ApproveVerification(int id)
         {
@@ -38,24 +40,20 @@ namespace ChhayaNirh.Controllers
                 return RedirectToAction("NIDVerificationQueue");
             }
 
-            // Update verification status
             user.IsVerified = true;
             db.Entry(user).State = EntityState.Modified;
             db.SaveChanges();
 
-            // --- Send Auto Message from Admin ---
-            int adminId = 3; // <-- Your real admin Id from Users table
-
+            int adminId = 3; // Admin user ID
             var message = new Chat
             {
-                SenderId = adminId,       // must exist in Users table
+                SenderId = adminId,
                 ReceiverId = user.Id,
                 MessageText = "✅ Your profile verification is successful.",
                 SentAt = DateTime.Now,
                 IsDelivered = false,
                 IsRead = false
             };
-
             db.Chats.Add(message);
             db.SaveChanges();
 
@@ -63,7 +61,7 @@ namespace ChhayaNirh.Controllers
             return RedirectToAction("NIDVerificationQueue");
         }
 
-        // 🔹 Reject Verification - FIXED
+        // Reject Verification
         [HttpPost]
         public ActionResult RejectVerification(int id)
         {
@@ -74,24 +72,20 @@ namespace ChhayaNirh.Controllers
                 return RedirectToAction("NIDVerificationQueue");
             }
 
-            // Keep verification false
             user.IsVerified = false;
             db.Entry(user).State = EntityState.Modified;
             db.SaveChanges();
 
-            // --- Send Auto Message from Admin ---
-            int adminId = 3; // <-- Your real admin Id
-
+            int adminId = 3; // Admin user ID
             var message = new Chat
             {
-                SenderId = adminId,       // must exist in Users table
+                SenderId = adminId,
                 ReceiverId = user.Id,
                 MessageText = "❌ Your profile verification was denied. Please check and upload correct information.",
                 SentAt = DateTime.Now,
                 IsDelivered = false,
                 IsRead = false
             };
-
             db.Chats.Add(message);
             db.SaveChanges();
 
@@ -99,6 +93,78 @@ namespace ChhayaNirh.Controllers
             return RedirectToAction("NIDVerificationQueue");
         }
 
+        // -------------------- Post Verification --------------------
+
+        // Show list of posts that are not verified
+        public ActionResult PostVerificationQueue()
+        {
+            var unverifiedPosts = db.Posts.Include("User")
+                                         .Where(p => !p.IsVerified)
+                                         .ToList();
+            return View(unverifiedPosts);
+        }
+
+        // Show details of a specific post for verification
+        public ActionResult VerifyPost(int id)
+        {
+            var post = db.Posts.Include("User").FirstOrDefault(p => p.Id == id);
+            if (post == null) return HttpNotFound();
+            return View(post);
+        }
+
+        // Approve a post
+        [HttpPost]
+        public ActionResult ApprovePost(int id)
+        {
+            var post = db.Posts.Include("User").FirstOrDefault(p => p.Id == id);
+            if (post == null) return HttpNotFound();
+
+            post.IsVerified = true;
+            db.Entry(post).State = EntityState.Modified;
+            db.SaveChanges();
+
+            db.Chats.Add(new Chat
+            {
+                SenderId = 3, // Admin ID
+                ReceiverId = post.UserId,
+                MessageText = "✅ Your post verification is successful.",
+                SentAt = DateTime.Now,
+                IsDelivered = false,
+                IsRead = false
+            });
+            db.SaveChanges();
+
+            TempData["Success"] = "Post verified and user notified.";
+            return RedirectToAction("PostVerificationQueue");
+        }
+
+        // Reject a post
+        [HttpPost]
+        public ActionResult RejectPost(int id)
+        {
+            var post = db.Posts.Include("User").FirstOrDefault(p => p.Id == id);
+            if (post == null) return HttpNotFound();
+
+            post.IsVerified = false;
+            db.Entry(post).State = EntityState.Modified;
+            db.SaveChanges();
+
+            db.Chats.Add(new Chat
+            {
+                SenderId = 3, // Admin ID
+                ReceiverId = post.UserId,
+                MessageText = "❌ Your post verification was denied. Please check and update your information.",
+                SentAt = DateTime.Now,
+                IsDelivered = false,
+                IsRead = false
+            });
+            db.SaveChanges();
+
+            TempData["Error"] = "Post rejected and user notified.";
+            return RedirectToAction("PostVerificationQueue");
+        }
+
+        // -------------------- Dispose --------------------
         protected override void Dispose(bool disposing)
         {
             if (disposing) db.Dispose();
