@@ -295,6 +295,10 @@
     <Compile Include="Migrations\202509171948330_AddIsVerifiedToPost.Designer.cs">
       <DependentUpon>202509171948330_AddIsVerifiedToPost.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202509180613250_AddIsBannedToUser.cs" />
+    <Compile Include="Migrations\202509180613250_AddIsBannedToUser.Designer.cs">
+      <DependentUpon>202509180613250_AddIsBannedToUser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\Chat.cs" />
@@ -405,6 +409,9 @@
     <Content Include="Views\AdminVerification\_ViewStart.cshtml" />
     <Content Include="Views\AdminVerification\PostVerificationQueue.cshtml" />
     <Content Include="Views\AdminVerification\VerifyPost.cshtml" />
+    <Content Include="Views\Admin\Details.cshtml" />
+    <Content Include="Views\Shared\_PostCard.cshtml" />
+    <Content Include="Views\Shared\_ReportCard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -472,6 +479,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202509171948330_AddIsVerifiedToPost.resx">
       <DependentUpon>202509171948330_AddIsVerifiedToPost.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202509180613250_AddIsBannedToUser.resx">
+      <DependentUpon>202509180613250_AddIsBannedToUser.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

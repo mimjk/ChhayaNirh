@@ -1,4 +1,5 @@
 ﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "User Management";
 }
 
@@ -13,14 +14,81 @@
                 <tr style="background-color: #5C0002; color: white;">
                     <th style="padding: 10px; text-align: left;">Name</th>
                     <th style="padding: 10px; text-align: left;">Email</th>
-                    <th style="padding: 10px; text-align: left;">Role</th>
+                    <th style="padding: 10px; text-align: left;">Status</th>
+                    <th style="padding: 10px; text-align: left;">Actions</th>
                 </tr>
             </thead>
             <tbody>
+                <!-- User 1 -->
                 <tr style="background-color: #FBE9E7;">
+                    <td style="padding: 10px;">First User</td>
+                    <td style="padding: 10px;">user01@gmail.com</td>
+                    <td style="padding: 10px;">
+                        <span style="color:#28a745; font-weight:bold;">🟢 Active</span>
+                        <span style="color:green; font-weight:bold;">✅ Verified</span>
+                    </td>
+                    <td style="padding: 10px;">
+                        <a href="@Url.Action("Details", "Admin")"
+                           style="background:#5C0002; color:white; border:none; padding:5px 12px; border-radius:6px; text-decoration:none; cursor:pointer; margin-right:5px;">
+                            🔍 View Details
+                        </a>
+                        <button style="background:#FF4444; color:white; border:none; padding:5px 12px; border-radius:6px; cursor:pointer; margin-right:5px;">Ban</button>
+                        <button style="background:#65676b; color:white; border:none; padding:5px 12px; border-radius:6px; cursor:pointer;">Delete</button>
+                    </td>
+                </tr>
+
+                <!-- User 2 -->
+                <tr style="background-color: #FFF3E0;">
                     <td style="padding: 10px;">Twaseen Tabassum</td>
                     <td style="padding: 10px;">twaseen@chhayanirh.com</td>
-                    <td style="padding: 10px;">Admin</td>
+                    <td style="padding: 10px;">
+                        <span style="color:#28a745; font-weight:bold;">🟢 Active</span>
+                        <span style="color:red; font-weight:bold;">❌ Not Verified</span>
+                    </td>
+                    <td style="padding: 10px;">
+                        <a href="@Url.Action("Details", "Admin")"
+                           style="background:#5C0002; color:white; border:none; padding:5px 12px; border-radius:6px; text-decoration:none; cursor:pointer; margin-right:5px;">
+                            🔍 View Details
+                        </a>
+                        <button style="background:#FF4444; color:white; border:none; padding:5px 12px; border-radius:6px; cursor:pointer; margin-right:5px;">Ban</button>
+                        <button style="background:#65676b; color:white; border:none; padding:5px 12px; border-radius:6px; cursor:pointer;">Delete</button>
+                    </td>
+                </tr>
+
+                <!-- User 3 -->
+                <tr style="background-color: #FBE9E7;">
+                    <td style="padding: 10px;">Test User</td>
+                    <td style="padding: 10px;">test@chhayanirh.com</td>
+                    <td style="padding: 10px;">
+                        <span style="color:#28a745; font-weight:bold;">🟢 Active</span>
+                        <span style="color:red; font-weight:bold;">❌ Not Verified</span>
+                    </td>
+                    <td style="padding: 10px;">
+                        <a href="@Url.Action("Details", "Admin")"
+                           style="background:#5C0002; color:white; border:none; padding:5px 12px; border-radius:6px; text-decoration:none; cursor:pointer; margin-right:5px;">
+                            🔍 View Details
+                        </a>
+                        <button style="background:#FF4444; color:white; border:none; padding:5px 12px; border-radius:6px; cursor:pointer; margin-right:5px;">Ban</button>
+                        <button style="background:#65676b; color:white; border:none; padding:5px 12px; border-radius:6px; cursor:pointer;">Delete</button>
+                    </td>
+                </tr>
+
+                <!-- User 4 -->
+                <tr style="background-color: #FFF3E0;">
+                    <td style="padding: 10px;">Twaseen</td>
+                    <td style="padding: 10px;">twaseen.cse.20220104134@aust.edu</td>
+                    <td style="padding: 10px;">
+                        <span style="color:#28a745; font-weight:bold;">🟢 Active</span>
+                        <span style="color:green; font-weight:bold;">✅ Verified</span>
+                    </td>
+                    <td style="padding: 10px;">
+                        <a href="@Url.Action("Details", "Admin")"
+                           style="background:#5C0002; color:white; border:none; padding:5px 12px; border-radius:6px; text-decoration:none; cursor:pointer; margin-right:5px;">
+                            🔍 View Details
+                        </a>
+                        <button style="background:#FF4444; color:white; border:none; padding:5px 12px; border-radius:6px; cursor:pointer; margin-right:5px;">Ban</button>
+                        <button style="background:#65676b; color:white; border:none; padding:5px 12px; border-radius:6px; cursor:pointer;">Delete</button>
+                    </td>
                 </tr>
             </tbody>
         </table>

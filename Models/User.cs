@@ -48,5 +48,7 @@ namespace ChhayaNirh.Models
         public string EmailVerificationCode { get; set; }
         public DateTime? EmailVerificationExpiry { get; set; }
         public DateTime CreatedAt { get; set; }
+
+        public bool IsBanned { get; set; } = false;
     }
 }

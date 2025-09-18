@@ -1,0 +1,42 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "User Details";
+}
+
+<div style="display: flex;">
+    @Html.Partial("_AdminSidebar")
+
+    <div style="flex-grow: 1; padding: 30px;">
+        <h2 style="color: #5C0002; margin-bottom: 20px;">👤 User Details</h2>
+
+        <div style="border:1px solid #e3e6ea; border-radius:8px; background:white; padding:20px; box-shadow:0 1px 2px rgba(0,0,0,0.1); max-width:600px;">
+            <!-- Profile Icon -->
+            <div style="display:flex; align-items:center; margin-bottom:20px;">
+                <div style="width:60px; height:60px; border-radius:50%; background:#5C0002; display:flex; align-items:center; justify-content:center; color:white; font-size:30px; font-weight:bold; margin-right:15px;">
+                    👤
+                </div>
+                <div>
+                    <h3 style="margin:0; color:#5C0002;">Twaseen Tabassum</h3>
+                    <p style="margin:0; color:#65676b;">twaseen@chhayanirh.com</p>
+                    <span style="color:#28a745; font-weight:bold;">🟢 Active</span>
+                    <span style="color:red; font-weight:bold;">❌ Not Verified</span>
+                </div>
+            </div>
+
+            <!-- Additional Details -->
+            <div style="background:#f8f9fa; padding:15px; border-radius:8px;">
+                <p><strong>Role:</strong> Admin</p>
+                <p><strong>Joined:</strong> 01 Jan 2025</p>
+                <p><strong>Posts:</strong> 5</p>
+                <p><strong>Reports:</strong> 0</p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="margin-top:15px;">
+                <button style="background:#28a745; color:white; border:none; padding:8px 15px; border-radius:6px; cursor:pointer; margin-right:5px;">✅ Verify</button>
+                <button style="background:#FF4444; color:white; border:none; padding:8px 15px; border-radius:6px; cursor:pointer; margin-right:5px;">Ban</button>
+                <button style="background:#65676b; color:white; border:none; padding:8px 15px; border-radius:6px; cursor:pointer;">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
