@@ -84,7 +84,6 @@
             <div class="text-end">
                 <button type="submit" class="btn custom-filter-btn">Apply Filters</button>
             </div>
-
         </form>
     </div>
 
@@ -94,6 +93,7 @@
         {
             <div class="col-lg-4 col-md-6 col-sm-12">
                 <div class="post-card cursor-pointer" onclick="openPostDetails(@post.Id)" style="cursor: pointer; transition: transform 0.2s; min-height: 180px; background-color: #FFFFF0;">
+
                     <!-- Post Header -->
                     <div class="post-header">
                         <img src="@(string.IsNullOrEmpty(post.User?.ProfilePicturePath) ? Url.Content("~/Content/Images/default-profile2.png") : Url.Content(post.User.ProfilePicturePath))"
@@ -103,9 +103,17 @@
                             <h6>@(post.User?.FullName ?? "Unknown User")</h6>
                             <p class="post-time">@post.CreatedAt.ToString("MMM dd, yyyy")</p>
                         </div>
+
+                        <!-- Post Type Badge -->
                         <span class="badge @(post.PostType == "Owner" ? "owner-badge" : "renter-badge") badge-post-type ms-auto">
                             @post.PostType
                         </span>
+
+                        <!-- ✅ Verified Badge -->
+                        @if (post.IsVerified)
+                        {
+                            <span style="color:green; font-size:1.2em; margin-left:5px;">✔ Verified</span>
+                        }
                     </div>
 
                     <!-- Post Content - Only Location and Price -->
@@ -155,17 +163,16 @@
     </div>
 </div>
 
-<!-- Include jQuery first, then Font Awesome -->
+<!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
 
 <script>
     function openPostDetails(postId) {
-        if (!postId) return; // safeguard
+        if (!postId) return;
         window.location.href = '@Url.Action("PostDetails", "Post")' + '?id=' + postId;
     }
 
-    // Add hover effect
     $(document).ready(function() {
         $('.post-card').hover(
             function() {

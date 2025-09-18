@@ -10,6 +10,20 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
 <div class="comment-page-container" style="background-color: #FFFFF0;">
+    <!-- Status Display -->
+    @if (Model.IsVerified)
+    {
+        <div style="color:green; font-weight:bold; padding:10px 0; font-size:1.1em;">
+            ✔ This post is verified
+        </div>
+    }
+    else
+    {
+        <div style="color:red; font-weight:bold; padding:10px 0; font-size:1.1em;">
+            ❌ Not yet verified
+        </div>
+    }
+
     <!-- Page Header with Delete Button -->
     <div class="comment-page-header" style="display: flex; align-items: center; justify-content: space-between; background-color: #FFFFF0;">
         <div style="display: flex; align-items: center; gap: 10px;">
@@ -130,13 +144,11 @@
                 }
                 else
                 {
-                    <!-- Show like count but disable interaction for own posts -->
                     <button class="action-btn like-btn disabled" disabled title="You cannot like your own post">
                         <i class="fas fa-heart"></i> <span class="like-count">@Model.LikeCount</span> Supports
                     </button>
                 }
                 <button class="action-btn comment-btn" data-post-id="@Model.Id" onclick="focusCommentInput()"><i class="fas fa-comment"></i> Comment</button>
-                <!-- Replace the existing verify button section in PostDetails.cshtml -->
                 @if (ViewBag.CurrentUserId == Model.UserId)
                 {
                     <button class="action-btn contact-btn" onclick="window.location.href='@Url.Action("VerifyPost", "Post", new { id = Model.Id })'">
@@ -151,7 +163,7 @@
                 }
             </div>
 
-            <!-- Electricity Bill Display Section - Only visible to post owner and admins -->
+            <!-- Electricity Bill Display Section -->
             @if ((ViewBag.CurrentUserId == Model.UserId || ViewBag.IsAdmin) && !string.IsNullOrEmpty(Model.ElectricityBillPath))
             {
                 <div class="mt-3 p-3 border rounded" style="background-color: #f8f9fa;">
@@ -274,6 +286,7 @@
         </div>
     </div>
 </div>
+
 <!-- Bill Modal for full screen viewing -->
 <div class="modal fade" id="billModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
@@ -359,7 +372,6 @@
                 return;
             }
 
-            // Disable submit button and show loading
             $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Submitting...');
 
             $.ajax({
@@ -373,15 +385,10 @@
                 success: function(res) {
                     if (res.success) {
                         $('#reportModal').modal('hide');
-
-                        // Update the success modal content for report
                         $('.modal-body', '#successModal').html('Your report has been submitted successfully and we will get back to you soon!');
                         var successModal = new bootstrap.Modal(document.getElementById('successModal'));
                         successModal.show();
-
-                        setTimeout(function() {
-                            successModal.hide();
-                        }, 4000); // Show for 4 seconds since message is longer
+                        setTimeout(function() { successModal.hide(); }, 4000);
                     } else {
                         alert('Error: ' + res.error);
                     }
@@ -395,16 +402,13 @@
             });
         });
 
-        // Reset report form when modal is hidden
         $('#reportModal').on('hidden.bs.modal', function() {
             $('#reportForm')[0].reset();
             $('#submitReportBtn').prop('disabled', true);
         });
     });
 
-    // Like functionality
     function toggleLike(postId, button) {
-        // Prevent double clicking
         $(button).prop('disabled', true);
 
         $.ajax({
@@ -413,15 +417,10 @@
             data: { postId: postId },
             success: function (response) {
                 if (response.success) {
-                    // Update like count
                     $(button).find('.like-count').text(response.likeCount);
-
-                    // Toggle liked class and heart color
                     if (response.isLiked) {
                         $(button).addClass('liked');
-                        $(button).find('i').css('color', '#e74c3c');
-                        // Add heart animation
-                        $(button).find('i').addClass('heartBeat');
+                        $(button).find('i').css('color', '#e74c3c').addClass('heartBeat');
                         setTimeout(() => $(button).find('i').removeClass('heartBeat'), 500);
                     } else {
                         $(button).removeClass('liked');
@@ -431,12 +430,10 @@
                     alert('Error: ' + response.error);
                 }
             },
-            error: function (xhr, status, error) {
+            error: function () {
                 alert('Error liking post. Please try again.');
-                console.error('Like error:', error);
             },
             complete: function() {
-                // Re-enable the button
                 $(button).prop('disabled', false);
             }
         });
@@ -454,34 +451,24 @@
         }
     }
 
-    function contactUser() {
-        window.location.href = 'https://localhost:44366/Chat';
-    }
-
     function deletePost(postId) {
-        // Show confirmation modal
         var deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
         deleteModal.show();
 
-        // When user clicks confirm
         $('#confirmDeleteBtn').off('click').on('click', function () {
             $.ajax({
                 url: '@Url.Action("DeletePost", "Post")',
                 type: 'POST',
                 data: { id: postId },
                 success: function (res) {
-                    deleteModal.hide(); // hide confirmation modal
+                    deleteModal.hide();
                     if (res.success) {
-                        // Update the success modal content for delete
                         $('.modal-body', '#successModal').html('Post deleted successfully!');
                         var successModal = new bootstrap.Modal(document.getElementById('successModal'));
                         successModal.show();
-
-                        setTimeout(function () {
-                            window.location.href = '@Url.Action("Post", "Post")';
-                        }, 1500); // redirect after 1.5 seconds
+                        setTimeout(function () { window.location.href = '@Url.Action("Post", "Post")'; }, 1500);
                     } else {
-                        alert(res.error); // fallback if error
+                        alert(res.error);
                     }
                 },
                 error: function () {
@@ -492,7 +479,6 @@
         });
     }
 
-    // Function to view electricity bill in full screen
     function viewBillFullScreen(imagePath) {
         $('#fullBillImage').attr('src', imagePath);
         var billModal = new bootstrap.Modal(document.getElementById('billModal'));
@@ -531,7 +517,6 @@
         cursor: not-allowed;
     }
 
-    /* Heart beat animation */
     .heartBeat {
         animation: heartBeat 0.5s ease-in-out;
     }
@@ -562,7 +547,6 @@
             cursor: not-allowed;
         }
 
-    /* Delete Button */
     .delete-btn {
         background-color: #dc3545;
         color: white;
@@ -580,7 +564,7 @@
         .delete-btn:hover {
             background-color: #c82333;
         }
-    /* Report Button */
+
     .report-btn {
         background-color: #ffc107;
         color: #212529;
@@ -599,7 +583,6 @@
             background-color: #e0a800;
         }
 
-    /* Report modal styling */
     .form-check {
         margin-bottom: 10px;
     }

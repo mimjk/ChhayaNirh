@@ -15,7 +15,6 @@ namespace ChhayaNirh.Models
         public string PostType { get; set; } // "Owner" or "Renter"
         public string Rent_Type { get; set; } // "Families Only", "Bachelors Only", or "Both"
 
-
         [Required(ErrorMessage = "Please enter area")]
         public string Area { get; set; }
 
@@ -40,6 +39,6 @@ namespace ChhayaNirh.Models
         public double? Longitude { get; set; }
         public string ElectricityBillPath { get; set; }
 
-
+        public bool IsVerified { get; set; } = false;
     }
 }

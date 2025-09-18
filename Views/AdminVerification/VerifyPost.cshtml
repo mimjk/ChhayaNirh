@@ -1,0 +1,33 @@
+﻿@model ChhayaNirh.Models.Post
+@{
+    ViewBag.Title = "Verify Post";
+}
+
+<div style="display:flex; min-height:80vh;">
+    @Html.Partial("_AdminSidebar")
+
+    <div style="flex-grow:1; padding:30px;">
+        <h2 style="color:#5C0002;">📋 Post Verification</h2>
+
+        <p><strong>User:</strong> @Model.User.FullName</p>
+        <p><strong>Area:</strong> @Model.Area</p>
+        <p><strong>Type:</strong> @Model.PostType</p>
+        <p><strong>Description:</strong> @Model.Description</p>
+
+        @if (!string.IsNullOrEmpty(Model.ElectricityBillPath))
+        {
+            <p>
+                <strong>Electricity Bill:</strong>
+                <a href="@Url.Content(Model.ElectricityBillPath)" target="_blank" style="color:#5C0002;">View</a>
+            </p>
+        }
+
+        <form method="post" action="@Url.Action("ApprovePost", "AdminVerification", new { id = Model.Id })" style="display:inline;">
+            <button type="submit" style="background-color:green; color:white; padding:10px 20px;">✅ Approve</button>
+        </form>
+
+        <form method="post" action="@Url.Action("RejectPost", "AdminVerification", new { id = Model.Id })" style="display:inline; margin-left:10px;">
+            <button type="submit" style="background-color:red; color:white; padding:10px 20px;">❌ Reject</button>
+        </form>
+    </div>
+</div>

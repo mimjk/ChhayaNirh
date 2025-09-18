@@ -291,6 +291,10 @@
     <Compile Include="Migrations\202509111810172_AddRentTypeToPost.Designer.cs">
       <DependentUpon>202509111810172_AddRentTypeToPost.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202509171948330_AddIsVerifiedToPost.cs" />
+    <Compile Include="Migrations\202509171948330_AddIsVerifiedToPost.Designer.cs">
+      <DependentUpon>202509171948330_AddIsVerifiedToPost.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\Chat.cs" />
@@ -386,7 +390,6 @@
     <Content Include="Views\Signup\VerifyEmail.cshtml" />
     <Content Include="Views\Post\VerifyPost.cshtml" />
     <Content Include="Views\Chat\Inbox.cshtml" />
-    <Content Include="Views\Admin\_AdminLayout.cshtml" />
     <Content Include="Views\Admin\Dashboard.cshtml" />
     <Content Include="Views\Admin\UserManagement.cshtml" />
     <Content Include="Views\Admin\PostManagement.cshtml" />
@@ -400,6 +403,8 @@
     <Content Include="Views\AdminVerification\NIDVerificationQueue.cshtml" />
     <Content Include="Views\AdminVerification\VerifyUser.cshtml" />
     <Content Include="Views\AdminVerification\_ViewStart.cshtml" />
+    <Content Include="Views\AdminVerification\PostVerificationQueue.cshtml" />
+    <Content Include="Views\AdminVerification\VerifyPost.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -464,6 +469,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202509111810172_AddRentTypeToPost.resx">
       <DependentUpon>202509111810172_AddRentTypeToPost.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202509171948330_AddIsVerifiedToPost.resx">
+      <DependentUpon>202509171948330_AddIsVerifiedToPost.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
